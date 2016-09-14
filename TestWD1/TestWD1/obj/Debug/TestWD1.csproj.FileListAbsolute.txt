@@ -1,0 +1,7 @@
+C:\Users\kame169\Desktop\TestWD1\TestWD1\bin\Debug\TestWD1.exe.config
+C:\Users\kame169\Desktop\TestWD1\TestWD1\bin\Debug\TestWD1.exe
+C:\Users\kame169\Desktop\TestWD1\TestWD1\bin\Debug\TestWD1.pdb
+C:\Users\kame169\Desktop\TestWD1\TestWD1\obj\Debug\TestWD1.Properties.Resources.resources
+C:\Users\kame169\Desktop\TestWD1\TestWD1\obj\Debug\TestWD1.csproj.GenerateResource.Cache
+C:\Users\kame169\Desktop\TestWD1\TestWD1\obj\Debug\TestWD1.exe
+C:\Users\kame169\Desktop\TestWD1\TestWD1\obj\Debug\TestWD1.pdb
