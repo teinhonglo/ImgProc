@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,12 +20,30 @@ namespace TestWD1
 
         private void UploadBt_Click(object sender, EventArgs e)
         {
+            openFileDialog1.Filter = "";
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                originImg.Load(openFileDialog1.FileName);
-                procImg.Load(openFileDialog1.FileName);
+                string ImgPath = openFileDialog1.FileName;
+                string uploadPath = System.Environment.CurrentDirectory + "/Origin/";
+                string savePath = System.Environment.CurrentDirectory + "/Output/";
+                try 
+                {
+                    if (Directory.Exists(uploadPath) == false)  Directory.CreateDirectory(uploadPath);
+                    if(Directory.Exists(savePath) == false)     Directory.CreateDirectory(savePath);
+                    
+                    Bitmap input = new Bitmap(ImgPath);
+                    input.Save(uploadPath + "origin.png");
+                    input.Save(savePath + "output.png");
+
+                }
+                catch( Exception ex )
+                {
+                    MessageBox.Show (ex.Message);
+                }
+                originImg.Load(uploadPath + "origin.png");
+                procImg.Load(savePath + "output.png");
             }
         }
-
     }
 }
+

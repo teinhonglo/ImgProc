@@ -5,3 +5,12 @@ C:\Users\kame169\Desktop\TestWD1\TestWD1\obj\Debug\TestWD1.Properties.Resources.
 C:\Users\kame169\Desktop\TestWD1\TestWD1\obj\Debug\TestWD1.csproj.GenerateResource.Cache
 C:\Users\kame169\Desktop\TestWD1\TestWD1\obj\Debug\TestWD1.exe
 C:\Users\kame169\Desktop\TestWD1\TestWD1\obj\Debug\TestWD1.pdb
+C:\Users\user\Desktop\ImgProc-master\TestWD1\TestWD1\bin\Debug\TestWD1.exe.config
+C:\Users\user\Desktop\ImgProc-master\TestWD1\TestWD1\bin\Debug\TestWD1.exe
+C:\Users\user\Desktop\ImgProc-master\TestWD1\TestWD1\bin\Debug\TestWD1.pdb
+C:\Users\user\Desktop\ImgProc-master\TestWD1\TestWD1\obj\Debug\TestWD1.csprojResolveAssemblyReference.cache
+C:\Users\user\Desktop\ImgProc-master\TestWD1\TestWD1\obj\Debug\TestWD1.Form1.resources
+C:\Users\user\Desktop\ImgProc-master\TestWD1\TestWD1\obj\Debug\TestWD1.Properties.Resources.resources
+C:\Users\user\Desktop\ImgProc-master\TestWD1\TestWD1\obj\Debug\TestWD1.csproj.GenerateResource.Cache
+C:\Users\user\Desktop\ImgProc-master\TestWD1\TestWD1\obj\Debug\TestWD1.exe
+C:\Users\user\Desktop\ImgProc-master\TestWD1\TestWD1\obj\Debug\TestWD1.pdb
