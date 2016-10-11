@@ -16,3 +16,12 @@ C:\Users\user\Desktop\ImgProc-master\TestWD1\TestWD1\obj\Release\TestWD1.csprojR
 C:\Users\user\Desktop\ImgProc-master\TestWD1\TestWD1\obj\Release\TestWD1.Form1.resources
 C:\Users\user\Desktop\ImgProc-master\TestWD1\TestWD1\obj\Release\TestWD1.Properties.Resources.resources
 C:\Users\user\Desktop\ImgProc-master\TestWD1\TestWD1\obj\Release\TestWD1.csproj.GenerateResource.Cache
+D:\ImgProc\TestWD1\TestWD1\bin\Release\TestWD1.exe.config
+D:\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.exe
+D:\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.pdb
+D:\ImgProc\TestWD1\TestWD1\bin\Release\TestWD1.exe
+D:\ImgProc\TestWD1\TestWD1\bin\Release\TestWD1.pdb
+D:\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.csprojResolveAssemblyReference.cache
+D:\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.Form1.resources
+D:\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.Properties.Resources.resources
+D:\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.csproj.GenerateResource.Cache
