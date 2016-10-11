@@ -17,6 +17,8 @@ namespace TestWD1
         static string uploadPath = System.Environment.CurrentDirectory + "\\Origin\\";
         static string savePath = System.Environment.CurrentDirectory + "\\Output\\";
         static string readPath = System.Environment.CurrentDirectory + "\\Read\\";
+        static bool isFst = true;
+
         public Form1()
         {
             InitializeComponent();
@@ -106,10 +108,18 @@ namespace TestWD1
             Bitmap bmp = (Bitmap)Image.FromFile(uploadPath + "origin.png");
 
             // Dirty code
-            Bitmap bmp_histogram = (Bitmap)Image.FromFile(savePath + "Guassian_Histogram.png");
-            bmp_histogram.Save(readPath + "Guassian_Histogram.png");
-            procImg.Load(readPath + "Guassian_Histogram.png");
-            bmp_histogram.Dispose();
+            System.Console.WriteLine(savePath + "Guassian_Histogram.png");
+            System.Console.WriteLine(File.Exists(savePath + "Guassian_Histogram.png"));
+            if (File.Exists(savePath + "Guassian_Histogram.png") == true)
+            {
+                
+                Bitmap bmp_histogram = (Bitmap)Image.FromFile(savePath + "Guassian_Histogram.png");
+                bmp_histogram.Save(readPath + "Guassian_Histogram.png");
+                procImg.Load(readPath + "Guassian_Histogram.png");
+                bmp_histogram.Dispose();
+            }
+            
+            
             Bitmap G_Bmp = AddNoise(bmp, stdVal, 0);
 
             // Dirty Code
@@ -217,10 +227,6 @@ namespace TestWD1
             return maxVal;
         }
 
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
 
 
     }
