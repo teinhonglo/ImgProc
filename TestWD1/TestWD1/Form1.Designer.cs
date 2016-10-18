@@ -44,6 +44,7 @@
             // 
             // tableLayoutPanel
             // 
+            this.tableLayoutPanel.AutoSize = true;
             this.tableLayoutPanel.ColumnCount = 2;
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -94,7 +95,6 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(653, 74);
             this.tableLayoutPanel1.TabIndex = 1;
-            
             // 
             // HistogramBT
             // 
@@ -141,6 +141,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.procImg)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

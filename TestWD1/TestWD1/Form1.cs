@@ -22,6 +22,9 @@ namespace TestWD1
         public Form1()
         {
             InitializeComponent();
+            originImg.SizeMode = PictureBoxSizeMode.Zoom;
+            procImg.SizeMode = PictureBoxSizeMode.Zoom;
+            
         }
         private void UploadBt_Click(object sender, EventArgs e)
         {
@@ -112,7 +115,6 @@ namespace TestWD1
             System.Console.WriteLine(File.Exists(savePath + "Guassian_Histogram.png"));
             if (File.Exists(savePath + "Guassian_Histogram.png") == true)
             {
-                
                 Bitmap bmp_histogram = (Bitmap)Image.FromFile(savePath + "Guassian_Histogram.png");
                 bmp_histogram.Save(readPath + "Guassian_Histogram.png");
                 procImg.Load(readPath + "Guassian_Histogram.png");
@@ -130,7 +132,6 @@ namespace TestWD1
             G_Bmp.Dispose();
 
             originImg.Load(savePath + "Guassian_Noise.png");
-
             procImg.Load(savePath + "Guassian_Histogram.png");
         }
 
@@ -139,7 +140,8 @@ namespace TestWD1
         public static Bitmap AddNoise(Bitmap OriginalImage, int stdDev, int mean)
         {
             int[] GuassianVal = new int[8 * stdDev + 1];
-            Bitmap NewBitmap = new Bitmap(OriginalImage.Width, OriginalImage.Height);
+            System.Drawing.Imaging.PixelFormat format = OriginalImage.PixelFormat;
+            Bitmap NewBitmap = new Bitmap(OriginalImage.Width, OriginalImage.Height, format);
             LockBitmap newBitmap = new LockBitmap(NewBitmap);
             LockBitmap oldBitmap = new LockBitmap(OriginalImage);
             newBitmap.LockBits();
@@ -173,7 +175,7 @@ namespace TestWD1
                     B = B < 0 ? 0 : B;
                     // Set Guassian White Noise
                     Color TempValue = Color.FromArgb(R, G, B);
-                    oldBitmap.SetPixel(x, y, TempValue);
+                    newBitmap.SetPixel(x, y, TempValue);
                 }
             }
             newBitmap.UnlockBits();
@@ -183,7 +185,7 @@ namespace TestWD1
             drawHistogram(ref GuassianVal, GuassianVal.Length, 300, out CuassianNoise);
 
             CuassianNoise.Save(savePath + "Guassian_Histogram.png");
-            return OriginalImage;
+            return NewBitmap;
         }
         //Draw Histogram
         private static bool drawHistogram(ref int[] datas, int width, int height, out Bitmap myimage)
