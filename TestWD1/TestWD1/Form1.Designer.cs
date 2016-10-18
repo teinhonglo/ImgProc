@@ -36,6 +36,7 @@
             this.HistogramBT = new System.Windows.Forms.Button();
             this.UploadBt = new System.Windows.Forms.Button();
             this.Guassion_NoiseBT = new System.Windows.Forms.Button();
+            this.clrSpaceBT = new System.Windows.Forms.Button();
             this.tableLayoutPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.originImg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.procImg)).BeginInit();
@@ -89,6 +90,7 @@
             this.tableLayoutPanel1.Controls.Add(this.HistogramBT, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.UploadBt, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.Guassion_NoiseBT, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.clrSpaceBT, 3, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(6, 4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
@@ -126,6 +128,16 @@
             this.Guassion_NoiseBT.UseVisualStyleBackColor = true;
             this.Guassion_NoiseBT.Click += new System.EventHandler(this.Guassion_NoiseBT_Click);
             // 
+            // clrSpaceBT
+            // 
+            this.clrSpaceBT.Location = new System.Drawing.Point(492, 3);
+            this.clrSpaceBT.Name = "clrSpaceBT";
+            this.clrSpaceBT.Size = new System.Drawing.Size(75, 23);
+            this.clrSpaceBT.TabIndex = 7;
+            this.clrSpaceBT.Text = "Color Space";
+            this.clrSpaceBT.UseVisualStyleBackColor = true;
+            this.clrSpaceBT.Click += new System.EventHandler(this.clrSpaceBT_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -155,6 +167,7 @@
         private System.Windows.Forms.Button HistogramBT;
         private System.Windows.Forms.Button UploadBt;
         private System.Windows.Forms.Button Guassion_NoiseBT;
+        private System.Windows.Forms.Button clrSpaceBT;
     }
 }
 

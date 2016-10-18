@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
 
 namespace TestWD1
 {
@@ -229,7 +230,149 @@ namespace TestWD1
             return maxVal;
         }
 
+        private void clrSpaceBT_Click(object sender, EventArgs e)
+        {
+            Bitmap originBitmap = new Bitmap(uploadPath + "origin.png");
+            Bitmap samplingBtimap = samplingQuarter(originBitmap);
+            samplingBtimap.Save(savePath + "QuarterGray.png");
+            Bitmap c1 = mergeImg(samplingBtimap, samplingBtimap, 0);
+            Bitmap c2 = mergeImg(samplingBtimap, samplingBtimap, 0);
+            Bitmap output = mergeImg(c1, c1, 1);
+            output.Save(readPath + "ColorSpace.png");
+            procImg.Load(readPath + "ColorSpace.png");
+            output.Save(savePath + "ColorSpace.png");
+            procImg.Load(savePath + "ColorSpace.png");
+            
+        }
 
+        public static void RGB2HSV(int R, int G, int B, ref double h, ref double s, ref double v)
+        {
+            double r = (double)R / 255;
+            double g = (double)G / 255;
+            double b = (double)B / 255;
+
+            double min, max, delta;
+
+            min = Math.Min(r, Math.Min(g, b));
+            max = Math.Max(r, Math.Max(g, b));
+
+            v = max;//Get V value
+            delta = max - min;
+            if (max != 0)
+            {
+                s = delta / max;
+                if (r == max)
+                {
+                    if (g < b)
+                        h = (g - b) / delta + 6;
+                }
+                else
+                {
+                    if (g == max)
+                    {
+                        h = (b - r) / delta + 2;
+                    }
+                    else
+                    {
+                        h = (r - g) / delta + 4;
+                    }
+                }
+                h *= 60;
+                s = s * 100;
+                v = v * 100;
+            }
+            else
+            {
+                s = 0;
+                h = 0;
+            }
+        }
+
+        private static Bitmap samplingQuarter(Bitmap b1){
+            Bitmap NewBitmap = new Bitmap(b1.Width, b1.Height, b1.PixelFormat);
+            LockBitmap newBitmap = new LockBitmap(NewBitmap);
+            LockBitmap oldBitmap = new LockBitmap(b1);
+            newBitmap.LockBits();
+            oldBitmap.LockBits();
+            for (int x = 0; x < oldBitmap.Width; x+=2)
+            {
+                for (int y = 0; y < oldBitmap.Height; y += 2)
+                {
+                    int R = oldBitmap.GetPixel(x, y).R;
+                    int G = oldBitmap.GetPixel(x, y).G;
+                    int B = oldBitmap.GetPixel(x, y).B;
+                    int GrayVal = (R + G + B) / 3;
+                    Color tempColor = Color.FromArgb(GrayVal, GrayVal, GrayVal);
+                    newBitmap.SetPixel(x, y, tempColor);
+                }
+            }
+            newBitmap.UnlockBits();
+            oldBitmap.UnlockBits();
+            NewBitmap = ResizeImage(NewBitmap, NewBitmap.Width / 2, NewBitmap.Height / 2);
+            
+            return NewBitmap;
+        }
+
+        public static Bitmap ResizeImage(Image image, int width, int height)
+        {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
+        }
+
+        private Bitmap mergeImg(Bitmap b1, Bitmap b2, int type) {
+            Bitmap mergeImg = default(Bitmap);
+            PixelFormat Format = b1.PixelFormat;
+            
+            if (type == 0) 
+            {
+                //水平合併
+                int width = b1.Width + b2.Width;
+                int height = (b1.Height > b2.Height) ? b1.Height : b2.Height;
+                Bitmap myBitmap = new Bitmap(width, height, Format);
+                Graphics gr = Graphics.FromImage(myBitmap);
+                //處理第一張圖片
+                gr.DrawImage(b1, 0, 0);
+                //處理第二張圖片
+                gr.DrawImage(b2, b1.Width, 0);
+                mergeImg = myBitmap;
+                gr.Dispose();           
+            }
+            else
+            {
+                //垂直合併
+                int width = (b1.Width > b2.Width) ? b1.Width : b2.Width;
+                int height = b1.Height + b2.Height;
+                Bitmap myBitmap = new Bitmap(width, height, Format);
+                Graphics gr = Graphics.FromImage(myBitmap);
+                //處理第一張圖片
+                gr.DrawImage(b1, 0, 0);
+                //處理第二張圖片
+                gr.DrawImage(b2, 0, b1.Height);
+                mergeImg = myBitmap;
+                gr.Dispose();
+
+            }
+            return mergeImg;
+        }
 
     }
 }
