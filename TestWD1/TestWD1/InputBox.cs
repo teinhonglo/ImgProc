@@ -53,5 +53,10 @@ namespace TestWD1
             value = textBox.Text;
             return dialogResult;
         }
+
+        internal static DialogResult InputBoxImpement(string p1, string p2, ref int value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

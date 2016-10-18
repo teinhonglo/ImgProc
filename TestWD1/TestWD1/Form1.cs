@@ -25,7 +25,7 @@ namespace TestWD1
             InitializeComponent();
             originImg.SizeMode = PictureBoxSizeMode.Zoom;
             procImg.SizeMode = PictureBoxSizeMode.Zoom;
-            
+
         }
         private void UploadBt_Click(object sender, EventArgs e)
         {
@@ -73,67 +73,86 @@ namespace TestWD1
 
         private void HistogramBT_Click(object sender, EventArgs e)
         {
-            Bitmap bmp = (Bitmap)Image.FromFile(uploadPath + "origin.png");
-            int[] ImgData = new int[256];
-            LockBitmap lockBitmap = new LockBitmap(bmp);
-            lockBitmap.LockBits();
-            Color compareClr = Color.FromArgb(255, 255, 255, 255);
-            for (int y = 0; y < lockBitmap.Height; y++)
+            try
             {
-                for (int x = 0; x < lockBitmap.Width; x++)
+                originImg.Load(readPath + "origin.png");
+                Bitmap bmp = (Bitmap)Image.FromFile(uploadPath + "origin.png");
+                int[] ImgData = new int[256];
+                LockBitmap lockBitmap = new LockBitmap(bmp);
+                lockBitmap.LockBits();
+
+                for (int y = 0; y < lockBitmap.Height; y++)
                 {
-                    int val = (int)((lockBitmap.GetPixel(x, y).R + lockBitmap.GetPixel(x, y).G + lockBitmap.GetPixel(x, y).B) / 3.0);
-                    ImgData[val]++;
+                    for (int x = 0; x < lockBitmap.Width; x++)
+                    {
+                        int val = (int)((lockBitmap.GetPixel(x, y).R + lockBitmap.GetPixel(x, y).G + lockBitmap.GetPixel(x, y).B) / 3.0);
+                        ImgData[val]++;
+                    }
                 }
+                lockBitmap.UnlockBits();
+                System.Console.WriteLine(lockBitmap.Height * lockBitmap.Width);
+                Bitmap Histogram = null;
+                drawHistogram(ref ImgData, 256, 300, out Histogram);
+                bmp.Dispose();
+
+                // Dirty Code
+                Histogram.Save(readPath + "Histogram.png");
+                procImg.Load(readPath + "Histogram.png");
+
+                Histogram.Save(savePath + "Histogram.png");
+                procImg.Load(savePath + "Histogram.png");
+                Histogram.Dispose();
+                originImg.Load(uploadPath + "origin.png");
             }
-            lockBitmap.UnlockBits();
-            System.Console.WriteLine(lockBitmap.Height * lockBitmap.Width);
-            Bitmap Histogram = null;
-            drawHistogram(ref ImgData, 256, 300, out Histogram);
-            bmp.Dispose();
-
-            // Dirty Code
-            Histogram.Save(readPath + "Histogram.png");
-            procImg.Load(readPath + "Histogram.png");
-
-            Histogram.Save(savePath + "Histogram.png");
-            procImg.Load(savePath + "Histogram.png");
-            Histogram.Dispose();
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                MessageBox.Show("請先上傳檔案");
+            }
         }
 
         private void Guassion_NoiseBT_Click(object sender, EventArgs e)
         {
-            string value = "10";
-            int stdVal = 0;
-            if (InputBox.InputBoxImpement("STD", "", ref value) == DialogResult.OK)
+            try
             {
-                stdVal = Convert.ToInt32(value);
-            }
-            Bitmap bmp = (Bitmap)Image.FromFile(uploadPath + "origin.png");
+                originImg.Load(readPath + "origin.png");
+                string value = "10";
+                int stdVal = 0;
+                if (InputBox.InputBoxImpement("STD", "", ref value) == DialogResult.OK)
+                {
+                    stdVal = Convert.ToInt32(value);
+                }
+                Bitmap bmp = (Bitmap)Image.FromFile(uploadPath + "origin.png");
 
-            // Dirty code
-            System.Console.WriteLine(savePath + "Guassian_Histogram.png");
-            System.Console.WriteLine(File.Exists(savePath + "Guassian_Histogram.png"));
-            if (File.Exists(savePath + "Guassian_Histogram.png") == true)
+                // Dirty code
+                System.Console.WriteLine(savePath + "Guassian_Histogram.png");
+                System.Console.WriteLine(File.Exists(savePath + "Guassian_Histogram.png"));
+                if (File.Exists(savePath + "Guassian_Histogram.png") == true)
+                {
+                    Bitmap bmp_histogram = (Bitmap)Image.FromFile(savePath + "Guassian_Histogram.png");
+                    bmp_histogram.Save(readPath + "Guassian_Histogram.png");
+                    procImg.Load(readPath + "Guassian_Histogram.png");
+                    bmp_histogram.Dispose();
+                }
+
+
+                Bitmap G_Bmp = AddNoise(bmp, stdVal, 0);
+
+                // Dirty Code
+                G_Bmp.Save(readPath + "Guassian_Noise.png");
+                originImg.Load(readPath + "Guassian_Noise.png");
+
+                G_Bmp.Save(savePath + "Guassian_Noise.png");
+                G_Bmp.Dispose();
+
+                originImg.Load(savePath + "Guassian_Noise.png");
+                procImg.Load(savePath + "Guassian_Histogram.png");
+            }
+            catch (Exception ex)
             {
-                Bitmap bmp_histogram = (Bitmap)Image.FromFile(savePath + "Guassian_Histogram.png");
-                bmp_histogram.Save(readPath + "Guassian_Histogram.png");
-                procImg.Load(readPath + "Guassian_Histogram.png");
-                bmp_histogram.Dispose();
+                MessageBox.Show(ex.Message);
+                MessageBox.Show("請先上傳檔案");
             }
-            
-            
-            Bitmap G_Bmp = AddNoise(bmp, stdVal, 0);
-
-            // Dirty Code
-            G_Bmp.Save(readPath + "Guassian_Noise.png");
-            originImg.Load(readPath + "Guassian_Noise.png");
-
-            G_Bmp.Save(savePath + "Guassian_Noise.png");
-            G_Bmp.Dispose();
-
-            originImg.Load(savePath + "Guassian_Noise.png");
-            procImg.Load(savePath + "Guassian_Histogram.png");
         }
 
 
@@ -229,20 +248,180 @@ namespace TestWD1
             }
             return maxVal;
         }
-
+        // Color Space Button
         private void clrSpaceBT_Click(object sender, EventArgs e)
         {
-            Bitmap originBitmap = new Bitmap(uploadPath + "origin.png");
-            Bitmap samplingBtimap = samplingQuarter(originBitmap);
-            samplingBtimap.Save(savePath + "QuarterGray.png");
-            Bitmap c1 = mergeImg(samplingBtimap, samplingBtimap, 0);
-            Bitmap c2 = mergeImg(samplingBtimap, samplingBtimap, 0);
-            Bitmap output = mergeImg(c1, c1, 1);
-            output.Save(readPath + "ColorSpace.png");
-            procImg.Load(readPath + "ColorSpace.png");
-            output.Save(savePath + "ColorSpace.png");
-            procImg.Load(savePath + "ColorSpace.png");
-            
+            try
+            {
+                originImg.Load(readPath + "origin.png");
+                Bitmap originBitmap = new Bitmap(uploadPath + "origin.png");
+                Bitmap samplingBtimap = samplingQuarter(originBitmap, false);
+                Bitmap samplingGrayBtimap = samplingQuarter(originBitmap, true);
+                samplingBtimap.Save(savePath + "QuarterGray.png");
+                string value = "0";
+                int clrChoice = 0;
+
+                if (InputBox.InputBoxImpement("Color Spacce", "Input(0 = CMYK, 1 = HSV, Other = RGB)", ref value) == DialogResult.OK)
+                {
+                    switch (value)
+                    {
+                        case "0":
+                            {
+                                clrChoice = 0;
+                                break;
+                            }
+                        case "1":
+                            {
+                                clrChoice = 1;
+                                break;
+                            }
+                        default:
+                            {
+                                clrChoice = 2;
+                                break;
+                            }
+                    }
+                }
+
+                Bitmap x = new Bitmap(samplingBtimap.Width, samplingBtimap.Height, samplingBtimap.PixelFormat);
+                Bitmap y = new Bitmap(samplingBtimap.Width, samplingBtimap.Height, samplingBtimap.PixelFormat);
+                Bitmap z = new Bitmap(samplingBtimap.Width, samplingBtimap.Height, samplingBtimap.PixelFormat);
+                colorSpaceConversion(samplingBtimap, clrChoice, ref x, ref y, ref z);
+                x = convertGrayScale(x);
+                y = convertGrayScale(y);
+                z = convertGrayScale(z);
+                Bitmap c1 = mergeImg(samplingGrayBtimap, x, 0);
+                Bitmap c2 = mergeImg(y, z, 0);
+                Bitmap output = mergeImg(c1, c2, 1);
+
+                output.Save(readPath + "ColorSpace.png");
+                procImg.Load(readPath + "ColorSpace.png");
+                output.Save(savePath + "ColorSpace.png");
+                procImg.Load(savePath + "ColorSpace.png");
+                originImg.Load(uploadPath + "origin.png");
+                originBitmap.Dispose();
+                samplingBtimap.Dispose();
+                samplingGrayBtimap.Dispose();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                MessageBox.Show("請先上傳檔案");
+            }
+        }
+        public static void colorSpaceConversion(Bitmap b1, int type, ref Bitmap x_axis, ref Bitmap y_axis, ref Bitmap z_axis)
+        {
+            Rectangle rect = new Rectangle(0, 0, b1.Width, b1.Height);
+            Bitmap myBitmap = b1.Clone(rect, b1.PixelFormat);
+            LockBitmap oldBitmap = new LockBitmap(myBitmap);
+            LockBitmap x_coor = new LockBitmap(x_axis);
+            LockBitmap y_coor = new LockBitmap(y_axis);
+            LockBitmap z_coor = new LockBitmap(z_axis);
+            oldBitmap.LockBits();
+            x_coor.LockBits();
+            y_coor.LockBits();
+            z_coor.LockBits();
+            for (int x = 0; x < oldBitmap.Width; x++)
+            {
+                for (int y = 0; y < oldBitmap.Height; y++)
+                {
+                    int R = oldBitmap.GetPixel(x, y).R;
+                    int G = oldBitmap.GetPixel(x, y).G;
+                    int B = oldBitmap.GetPixel(x, y).B;
+                    switch (type)
+                    {
+                        case 0:
+                            {
+                                //CMYK
+                                double C = 0;
+                                double M = 0;
+                                double Y = 0;
+                                double K = 0;
+
+                                RGB2CMYK(R, G, B, ref C, ref M, ref Y, ref K);
+                                C = C * 255;
+                                M = M * 255;
+                                Y = Y * 255;
+
+                                C = (C > 255) ? 255 : C;
+                                C = (C < 0) ? 0 : C;
+                                M = (M > 255) ? 255 : M;
+                                M = (M < 0) ? 0 : M;
+                                Y = (Y > 255) ? 255 : Y;
+                                Y = (Y < 0) ? 0 : Y;
+
+                                Color tempVal = Color.FromArgb(255 - (int)C, G, B);
+                                x_coor.SetPixel(x, y, tempVal);
+                                tempVal = Color.FromArgb(R, 255 - (int)M, B);
+                                y_coor.SetPixel(x, y, tempVal);
+                                tempVal = Color.FromArgb(R, G, 255 - (int)Y);
+                                z_coor.SetPixel(x, y, tempVal);
+                                break;
+                            }
+                        case 1:
+                            {
+                                //HSV
+                                double H = 0;
+                                double S = 0;
+                                double V = 0;
+
+                                RGB2HSV(R, G, B, ref H, ref S, ref V);
+
+                                H = (H > 255) ? 255 : H;
+                                H = (H < 0) ? 0 : H;
+                                S = (S > 255) ? 255 : S;
+                                S = (S < 0) ? 0 : S;
+                                V = (V > 255) ? 255 : V;
+                                V = (V < 0) ? 0 : V;
+
+                                Color tempVal = Color.FromArgb((int)H, G, B);
+                                x_coor.SetPixel(x, y, tempVal);
+                                tempVal = Color.FromArgb(R, (int)S, B);
+                                y_coor.SetPixel(x, y, tempVal);
+                                tempVal = Color.FromArgb(R, G, (int)V);
+                                z_coor.SetPixel(x, y, tempVal);
+                                break;
+                            }
+                        default:
+                            {
+                                //RGB
+
+                                Color tempVal = Color.FromArgb(R, R, R);
+                                x_coor.SetPixel(x, y, tempVal);
+                                tempVal = Color.FromArgb(G, G, G);
+                                y_coor.SetPixel(x, y, tempVal);
+                                tempVal = Color.FromArgb(B, B, B);
+                                z_coor.SetPixel(x, y, tempVal);
+                                break;
+                            }
+                    }
+                }
+            }
+            oldBitmap.UnlockBits();
+            x_coor.UnlockBits();
+            y_coor.UnlockBits();
+            z_coor.UnlockBits();
+            return;
+        }
+
+        public static void RGB2CMYK(int R, int G, int B, ref double c, ref double m, ref double y, ref double k)
+        {
+            // Normalize 0 ~ 1
+            c = (double)(255 - R) / 255;
+            m = (double)(255 - G) / 255;
+            y = (double)(255 - B) / 255;
+
+            k = (double)Math.Min(c, Math.Min(m, y));
+            if (k == 1.0)
+            {
+                c = m = y = 0;
+            }
+            else
+            {
+                c = (c - k) / (1 - k);
+                m = (m - k) / (1 - k);
+                y = (y - k) / (1 - k);
+            }
         }
 
         public static void RGB2HSV(int R, int G, int B, ref double h, ref double s, ref double v)
@@ -288,13 +467,14 @@ namespace TestWD1
             }
         }
 
-        private static Bitmap samplingQuarter(Bitmap b1){
+        private static Bitmap samplingQuarter(Bitmap b1, bool isGrayScale)
+        {
             Bitmap NewBitmap = new Bitmap(b1.Width, b1.Height, b1.PixelFormat);
             LockBitmap newBitmap = new LockBitmap(NewBitmap);
             LockBitmap oldBitmap = new LockBitmap(b1);
             newBitmap.LockBits();
             oldBitmap.LockBits();
-            for (int x = 0; x < oldBitmap.Width; x+=2)
+            for (int x = 0; x < oldBitmap.Width; x += 2)
             {
                 for (int y = 0; y < oldBitmap.Height; y += 2)
                 {
@@ -302,14 +482,14 @@ namespace TestWD1
                     int G = oldBitmap.GetPixel(x, y).G;
                     int B = oldBitmap.GetPixel(x, y).B;
                     int GrayVal = (R + G + B) / 3;
-                    Color tempColor = Color.FromArgb(GrayVal, GrayVal, GrayVal);
+                    Color tempColor = (isGrayScale) ? Color.FromArgb(GrayVal, GrayVal, GrayVal) : Color.FromArgb(R, G, B);
                     newBitmap.SetPixel(x, y, tempColor);
                 }
             }
             newBitmap.UnlockBits();
             oldBitmap.UnlockBits();
             NewBitmap = ResizeImage(NewBitmap, NewBitmap.Width / 2, NewBitmap.Height / 2);
-            
+
             return NewBitmap;
         }
 
@@ -338,11 +518,12 @@ namespace TestWD1
             return destImage;
         }
 
-        private Bitmap mergeImg(Bitmap b1, Bitmap b2, int type) {
+        private Bitmap mergeImg(Bitmap b1, Bitmap b2, int type)
+        {
             Bitmap mergeImg = default(Bitmap);
             PixelFormat Format = b1.PixelFormat;
-            
-            if (type == 0) 
+
+            if (type == 0)
             {
                 //水平合併
                 int width = b1.Width + b2.Width;
@@ -354,7 +535,7 @@ namespace TestWD1
                 //處理第二張圖片
                 gr.DrawImage(b2, b1.Width, 0);
                 mergeImg = myBitmap;
-                gr.Dispose();           
+                gr.Dispose();
             }
             else
             {
@@ -369,11 +550,28 @@ namespace TestWD1
                 gr.DrawImage(b2, 0, b1.Height);
                 mergeImg = myBitmap;
                 gr.Dispose();
-
             }
             return mergeImg;
         }
-
+        public static Bitmap convertGrayScale(Bitmap b1)
+        {
+            LockBitmap b = new LockBitmap(b1);
+            b.LockBits();
+            for (int x = 0; x < b.Width; x++)
+            {
+                for (int y = 0; y < b.Height; y++)
+                {
+                    int R = b.GetPixel(x, y).R;
+                    int G = b.GetPixel(x, y).G;
+                    int B = b.GetPixel(x, y).B;
+                    int GrayScale = (R + G +B)/3;
+                    Color tempColor = Color.FromArgb(GrayScale, GrayScale, GrayScale);
+                    b.SetPixel(x, y, tempColor);
+                }
+            }
+            b.UnlockBits();
+            return b1;
+        }
     }
 }
 
