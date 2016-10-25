@@ -564,13 +564,89 @@ namespace TestWD1
                     int R = b.GetPixel(x, y).R;
                     int G = b.GetPixel(x, y).G;
                     int B = b.GetPixel(x, y).B;
-                    int GrayScale = (R + G +B)/3;
+                    int GrayScale = (R + G + B) / 3;
                     Color tempColor = Color.FromArgb(GrayScale, GrayScale, GrayScale);
                     b.SetPixel(x, y, tempColor);
                 }
             }
             b.UnlockBits();
             return b1;
+        }
+
+        private void FFT_BT_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Bitmap bmp = new Bitmap(uploadPath + "origin.png");
+
+                int width = bmp.Width;
+                int height = bmp.Height;
+                int widthPOWER_OF_2 = 1;
+                int heightPOWER_OF_2 = 1;
+
+                do
+                {
+                    widthPOWER_OF_2 *= 2;
+                } while ((width /= 2) > 0);
+
+                do
+                {
+                    heightPOWER_OF_2 *= 2;
+                } while ((height /= 2) > 0);
+
+
+                Bitmap largeBmp = new Bitmap(widthPOWER_OF_2, heightPOWER_OF_2, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+
+                try
+                {
+                    using (Graphics largeGraphics = Graphics.FromImage(largeBmp))
+                    {
+                        largeGraphics.PageUnit = GraphicsUnit.Pixel;
+                        largeGraphics.DrawImage(bmp, 0, 0);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(bmp.PixelFormat.ToString());
+                }
+
+                // create grayscale filter (BT709)
+                AForge.Imaging.Filters.Grayscale filter = new AForge.Imaging.Filters.Grayscale(0.2125, 0.7154, 0.0721);
+                // apply the filter
+                Bitmap grayImage = filter.Apply(largeBmp);
+
+                AForge.Imaging.ComplexImage cimage = AForge.Imaging.ComplexImage.FromBitmap(grayImage);
+                cimage.ForwardFourierTransform();
+                // get frequency view
+                System.Drawing.Bitmap img = cimage.ToBitmap();
+                procImg.Image = (Image)img;
+                img.Save(savePath + "fft.png");
+                bmp.Dispose();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
+        }
+
+        public static Bitmap convertTo24Bpp(Bitmap b1)
+        {
+            Bitmap bmp = new Bitmap(b1.Width, b1.Height, PixelFormat.Format24bppRgb);
+            LockBitmap oldBmp = new LockBitmap(b1);
+            LockBitmap newBmp = new LockBitmap(bmp);
+            oldBmp.LockBits();
+            newBmp.LockBits();
+            for (int x = 0; x < oldBmp.Width; x++)
+            {
+                for (int y = 0; y < oldBmp.Height; y++)
+                {
+                    oldBmp.GetPixel(x, y);
+                }
+            }
+            oldBmp.UnlockBits();
+            newBmp.UnlockBits();
+            return bmp;
         }
     }
 }

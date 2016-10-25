@@ -25,3 +25,12 @@ D:\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.csproj.GenerateResource.Cache
 D:\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.exe
 D:\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.pdb
 D:\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.csprojResolveAssemblyReference.cache
+D:\ImgProc\TestWD1\TestWD1\bin\Release\AForge.Imaging.dll
+D:\ImgProc\TestWD1\TestWD1\bin\Release\AForge.Imaging.Formats.dll
+D:\ImgProc\TestWD1\TestWD1\bin\Release\AForge.Imaging.IPPrototyper.dll
+D:\ImgProc\TestWD1\TestWD1\bin\Release\AForge.Math.dll
+D:\ImgProc\TestWD1\TestWD1\bin\Release\AForge.dll
+D:\ImgProc\TestWD1\TestWD1\bin\Release\AForge.Imaging.xml
+D:\ImgProc\TestWD1\TestWD1\bin\Release\AForge.Imaging.Formats.xml
+D:\ImgProc\TestWD1\TestWD1\bin\Release\AForge.Math.xml
+D:\ImgProc\TestWD1\TestWD1\bin\Release\AForge.xml
