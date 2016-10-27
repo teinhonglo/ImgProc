@@ -34,3 +34,17 @@ D:\ImgProc\TestWD1\TestWD1\bin\Release\AForge.Imaging.xml
 D:\ImgProc\TestWD1\TestWD1\bin\Release\AForge.Imaging.Formats.xml
 D:\ImgProc\TestWD1\TestWD1\bin\Release\AForge.Math.xml
 D:\ImgProc\TestWD1\TestWD1\bin\Release\AForge.xml
+C:\Users\kame169\Desktop\ImgProc\TestWD1\TestWD1\bin\Release\TestWD1.exe.config
+C:\Users\kame169\Desktop\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.exe
+C:\Users\kame169\Desktop\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.pdb
+C:\Users\kame169\Desktop\ImgProc\TestWD1\TestWD1\bin\Release\TestWD1.exe
+C:\Users\kame169\Desktop\ImgProc\TestWD1\TestWD1\bin\Release\TestWD1.pdb
+C:\Users\kame169\Desktop\ImgProc\TestWD1\TestWD1\bin\Release\AForge.dll
+C:\Users\kame169\Desktop\ImgProc\TestWD1\TestWD1\bin\Release\AForge.Imaging.xml
+C:\Users\kame169\Desktop\ImgProc\TestWD1\TestWD1\bin\Release\AForge.Imaging.Formats.xml
+C:\Users\kame169\Desktop\ImgProc\TestWD1\TestWD1\bin\Release\AForge.Math.xml
+C:\Users\kame169\Desktop\ImgProc\TestWD1\TestWD1\bin\Release\AForge.xml
+C:\Users\kame169\Desktop\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.csprojResolveAssemblyReference.cache
+C:\Users\kame169\Desktop\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.Form1.resources
+C:\Users\kame169\Desktop\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.Properties.Resources.resources
+C:\Users\kame169\Desktop\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.csproj.GenerateResource.Cache

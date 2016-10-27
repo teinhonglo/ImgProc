@@ -607,7 +607,7 @@ namespace TestWD1
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(bmp.PixelFormat.ToString());
+                    MessageBox.Show(ex.ToString());
                 }
 
                 // create grayscale filter (BT709)
@@ -630,23 +630,80 @@ namespace TestWD1
 
         }
 
-        public static Bitmap convertTo24Bpp(Bitmap b1)
+        private void skinDetectionBT_Click(object sender, EventArgs e)
         {
-            Bitmap bmp = new Bitmap(b1.Width, b1.Height, PixelFormat.Format24bppRgb);
-            LockBitmap oldBmp = new LockBitmap(b1);
-            LockBitmap newBmp = new LockBitmap(bmp);
-            oldBmp.LockBits();
-            newBmp.LockBits();
-            for (int x = 0; x < oldBmp.Width; x++)
+            try
             {
-                for (int y = 0; y < oldBmp.Height; y++)
+                // Read image from upload path
+                Bitmap bmp = new Bitmap(uploadPath + "origin.png");
+                LockBitmap myBmp = new LockBitmap(bmp);
+                myBmp.LockBits();
+                for(int x = 0; x < myBmp.Width; x++)
                 {
-                    oldBmp.GetPixel(x, y);
+                    for(int y = 0; y < myBmp.Height; y++)
+                    {
+                        // RGB 
+                        int R = myBmp.GetPixel(x, y).R;
+                        int G = myBmp.GetPixel(x, y).G;
+                        int B = myBmp.GetPixel(x, y).B;
+                        // HSV 
+                        double H = 0;
+                        double S = 0;
+                        double V = 0;
+
+                        RGB2HSV(R, G, B, ref H, ref S, ref V);
+
+                        Color color;
+                        if(skinDetection(R, G, B))
+                        {
+                            color = Color.FromArgb(255, 255, 255);
+                        }else
+                        {
+                            color = Color.FromArgb(0, 0, 0);
+                        }
+                        myBmp.SetPixel(x, y, color);
+                    }
                 }
+                myBmp.UnlockBits();
+                // Dirty code
+                bmp.Save(readPath + "skin.png");
+                procImg.Load(readPath + "skin.png");
+                bmp.Save(savePath + "skin.png");
+                procImg.Load(savePath+"skin.png");
+                bmp.Dispose();
+            }catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
-            oldBmp.UnlockBits();
-            newBmp.UnlockBits();
-            return bmp;
+        }
+
+        public static bool skinDetection(int R, int G, int B)
+        {
+            /* convert RGB color space to IRgBy color space using this formula:
+					I= [L(R) + L(B) + L(G)] / 3
+					Rg = L(R) - L(G)
+					By = L(B) - [L(G) +L(R)] / 2
+					
+					to calculate the hue:
+					hue = atan2(Rg,By) * (180 / 3.141592654f)
+					*/
+            double I = (Math.Log(R) + Math.Log(B) + Math.Log(G)) / 3;
+            double Rg = Math.Log(R) - Math.Log(G);
+            double By = Math.Log(B) - (Math.Log(G) + Math.Log(R)) / 2;
+            double hue = Math.Atan2(Rg, By) * (180 / Math.PI);
+
+
+
+
+            if (I <= 5 && (hue >= 4 && hue <= 255))
+            {
+                //r = 255;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
