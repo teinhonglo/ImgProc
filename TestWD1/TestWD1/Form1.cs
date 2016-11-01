@@ -677,34 +677,25 @@ namespace TestWD1
             }
         }
 
-        public static bool skinDetection(int R, int G, int B)
+        public static bool skinDetection(int r, int g, int b)
         {
-            /* convert RGB color space to IRgBy color space using this formula:
-					I= [L(R) + L(B) + L(G)] / 3
-					Rg = L(R) - L(G)
-					By = L(B) - [L(G) +L(R)] / 2
-					
-					to calculate the hue:
-					hue = atan2(Rg,By) * (180 / 3.141592654f)
-					*/
-            double I = (Math.Log(R) + Math.Log(B) + Math.Log(G)) / 3;
-            double Rg = Math.Log(R) - Math.Log(G);
-            double By = Math.Log(B) - (Math.Log(G) + Math.Log(R)) / 2;
-            double hue = Math.Atan2(Rg, By) * (180 / Math.PI);
-
-
-
-
-            if (I <= 5 && (hue >= 4 && hue <= 255))
-            {
-                //r = 255;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+            var Cb = (0.148 * r) - (0.291 * g) + (0.439 * b) + 128;
+			var Cr = (0.439 * r) - (0.368 * g) - (0.071 * b) + 128;
+ 
+			if ((r > 95 && g > 40 && b > 20 
+				&& (Math.Max(Math.Max(r, g),b) - Math.Min(Math.Min(r, g), b) > 15) 
+				&& (r - g) > 15 && r > g && r > b) 
+				&& (Cr > 140 && Cr < 162 || Cb > 105 && Cb < 130))
+			{
+				return true; 
+			}
+			else
+			{
+				return false; 
+			} 
+ 
+ 
+		}
     }
 }
 
