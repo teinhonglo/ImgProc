@@ -687,7 +687,7 @@ namespace TestWD1
 				&& (r - g) > 15 && r > g && r > b) 
 				&& (Cr > 140 && Cr < 162 || Cb > 105 && Cb < 130))
 			{
-				return true; 
+				return true;
 			}
 			else
 			{
@@ -696,6 +696,89 @@ namespace TestWD1
  
  
 		}
+
+        private void EqualizationBT_Click(object sender, EventArgs e)
+        {
+            try {
+                // Read image from upload path
+                Bitmap bmp = new Bitmap(uploadPath + "origin.png");
+                LockBitmap myBmp = new LockBitmap(bmp);
+                myBmp.LockBits();
+                int width = myBmp.Width;
+                int height = myBmp.Height;
+                int [] GrayLevel = new int[256];
+                for (int x = 0; x < width; x++)
+                {
+                    for (int y = 0; y < height; y++)
+                    {
+                        // RGB 
+                        int R = myBmp.GetPixel(x, y).R;
+                        int G = myBmp.GetPixel(x, y).G;
+                        int B = myBmp.GetPixel(x, y).B;
+
+                        int GrayVal = (R + G + B) / 3;
+                        GrayLevel[GrayVal]++;
+
+                        Color color = Color.FromArgb(GrayVal, GrayVal, GrayVal);
+                        myBmp.SetPixel(x, y, color);
+                    }
+                }
+                myBmp.UnlockBits();
+
+                int cdf_min = Int32.MaxValue;
+                int[] CDF = new int[GrayLevel.Length];
+                CDF[0] = GrayLevel[0];
+                for (int i = 1; i < GrayLevel.Length; i++ )
+                {
+                    CDF[i] = GrayLevel[i] + CDF[i - 1];
+                    if (CDF[i] != 0 && CDF[i] < cdf_min)
+                    {
+                        cdf_min = CDF[i];
+                    }
+                    
+                }
+                
+                int M = width;
+                int N = height;
+                int L = 256;
+                int[] h = new int[GrayLevel.Length];
+                
+                for (int v = 0; v < h.Length; v++) 
+                {
+                    double m = CDF[v] - cdf_min;
+                    double d = M * N - cdf_min;
+                    h[v] = (int)Math.Round((m / d) * (L -1));
+                    h[v] = ( h[v] >= 0)? h[v] : 0;
+                }
+                int [] new_GrayLevel = new int [GrayLevel.Length];
+                int MaxValue = 0;
+                for(int i = 0; i < GrayLevel.Length; i++)
+                {
+                    new_GrayLevel[h[i]] += GrayLevel[i];
+                    if (new_GrayLevel[h[i]] > MaxValue) {
+                        MaxValue = new_GrayLevel[h[i]];
+                    }
+                }
+                Bitmap Histogram;
+                drawHistogram(ref new_GrayLevel, new_GrayLevel.Length, 300, out Histogram);
+                // Dirty code
+                try {
+                    Histogram.Save(savePath + "HistogramEqualization.png");
+                    procImg.Load(savePath + "HistogramEqualization.png");
+                    Histogram.Save(readPath + "HistogramEqualization.png");
+                    procImg.Load(readPath + "HistogramEqualization.png");
+                }catch(Exception ex){
+                    Histogram.Save(readPath + "HistogramEqualization.png");
+                    procImg.Load(readPath + "HistogramEqualization.png");
+                    Histogram.Save(savePath + "HistogramEqualization.png");
+                    procImg.Load(savePath + "HistogramEqualization.png");
+                }
+                bmp.Dispose();
+                Histogram.Dispose();
+            }catch (Exception ex) {
+                MessageBox.Show(""+ex);
+            }
+        }
     }
 }
 

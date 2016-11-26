@@ -39,6 +39,7 @@
             this.clrSpaceBT = new System.Windows.Forms.Button();
             this.FFT_BT = new System.Windows.Forms.Button();
             this.skinDetectionBT = new System.Windows.Forms.Button();
+            this.EqualizationBT = new System.Windows.Forms.Button();
             this.tableLayoutPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.originImg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.procImg)).BeginInit();
@@ -84,19 +85,21 @@
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 6;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18F));
+            this.tableLayoutPanel1.ColumnCount = 7;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.Controls.Add(this.HistogramBT, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.UploadBt, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.Guassion_NoiseBT, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.clrSpaceBT, 3, 0);
             this.tableLayoutPanel1.Controls.Add(this.FFT_BT, 4, 0);
             this.tableLayoutPanel1.Controls.Add(this.skinDetectionBT, 5, 0);
+            this.tableLayoutPanel1.Controls.Add(this.EqualizationBT, 6, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(6, 4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
@@ -106,7 +109,7 @@
             // 
             // HistogramBT
             // 
-            this.HistogramBT.Location = new System.Drawing.Point(107, 3);
+            this.HistogramBT.Location = new System.Drawing.Point(84, 3);
             this.HistogramBT.Name = "HistogramBT";
             this.HistogramBT.Size = new System.Drawing.Size(75, 23);
             this.HistogramBT.TabIndex = 5;
@@ -126,7 +129,7 @@
             // 
             // Guassion_NoiseBT
             // 
-            this.Guassion_NoiseBT.Location = new System.Drawing.Point(211, 3);
+            this.Guassion_NoiseBT.Location = new System.Drawing.Point(165, 3);
             this.Guassion_NoiseBT.Name = "Guassion_NoiseBT";
             this.Guassion_NoiseBT.Size = new System.Drawing.Size(75, 23);
             this.Guassion_NoiseBT.TabIndex = 6;
@@ -136,7 +139,7 @@
             // 
             // clrSpaceBT
             // 
-            this.clrSpaceBT.Location = new System.Drawing.Point(315, 3);
+            this.clrSpaceBT.Location = new System.Drawing.Point(246, 3);
             this.clrSpaceBT.Name = "clrSpaceBT";
             this.clrSpaceBT.Size = new System.Drawing.Size(75, 23);
             this.clrSpaceBT.TabIndex = 7;
@@ -146,7 +149,7 @@
             // 
             // FFT_BT
             // 
-            this.FFT_BT.Location = new System.Drawing.Point(419, 3);
+            this.FFT_BT.Location = new System.Drawing.Point(327, 3);
             this.FFT_BT.Name = "FFT_BT";
             this.FFT_BT.Size = new System.Drawing.Size(75, 23);
             this.FFT_BT.TabIndex = 8;
@@ -156,13 +159,23 @@
             // 
             // skinDetectionBT
             // 
-            this.skinDetectionBT.Location = new System.Drawing.Point(536, 3);
+            this.skinDetectionBT.Location = new System.Drawing.Point(408, 3);
             this.skinDetectionBT.Name = "skinDetectionBT";
             this.skinDetectionBT.Size = new System.Drawing.Size(75, 23);
             this.skinDetectionBT.TabIndex = 9;
             this.skinDetectionBT.Text = "skin Detection";
             this.skinDetectionBT.UseVisualStyleBackColor = true;
             this.skinDetectionBT.Click += new System.EventHandler(this.skinDetectionBT_Click);
+            // 
+            // EqualizationBT
+            // 
+            this.EqualizationBT.Location = new System.Drawing.Point(489, 3);
+            this.EqualizationBT.Name = "EqualizationBT";
+            this.EqualizationBT.Size = new System.Drawing.Size(75, 23);
+            this.EqualizationBT.TabIndex = 10;
+            this.EqualizationBT.Text = "Equalization";
+            this.EqualizationBT.UseVisualStyleBackColor = true;
+            this.EqualizationBT.Click += new System.EventHandler(this.EqualizationBT_Click);
             // 
             // Form1
             // 
@@ -196,6 +209,7 @@
         private System.Windows.Forms.Button clrSpaceBT;
         private System.Windows.Forms.Button FFT_BT;
         private System.Windows.Forms.Button skinDetectionBT;
+        private System.Windows.Forms.Button EqualizationBT;
     }
 }
 
