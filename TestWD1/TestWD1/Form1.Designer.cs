@@ -50,31 +50,31 @@
             // 
             this.tableLayoutPanel.AutoSize = true;
             this.tableLayoutPanel.ColumnCount = 2;
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel.Controls.Add(this.originImg, 0, 0);
             this.tableLayoutPanel.Controls.Add(this.procImg, 1, 0);
             this.tableLayoutPanel.Location = new System.Drawing.Point(3, 84);
             this.tableLayoutPanel.Name = "tableLayoutPanel";
             this.tableLayoutPanel.RowCount = 1;
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel.Size = new System.Drawing.Size(656, 328);
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel.Size = new System.Drawing.Size(656, 650);
             this.tableLayoutPanel.TabIndex = 0;
             // 
             // originImg
             // 
             this.originImg.Location = new System.Drawing.Point(3, 3);
             this.originImg.Name = "originImg";
-            this.originImg.Size = new System.Drawing.Size(317, 318);
+            this.originImg.Size = new System.Drawing.Size(322, 319);
             this.originImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.originImg.TabIndex = 1;
             this.originImg.TabStop = false;
             // 
             // procImg
             // 
-            this.procImg.Location = new System.Drawing.Point(326, 3);
+            this.procImg.Location = new System.Drawing.Point(331, 3);
             this.procImg.Name = "procImg";
-            this.procImg.Size = new System.Drawing.Size(322, 318);
+            this.procImg.Size = new System.Drawing.Size(322, 319);
             this.procImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.procImg.TabIndex = 2;
             this.procImg.TabStop = false;
@@ -182,7 +182,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.ClientSize = new System.Drawing.Size(671, 499);
+            this.ClientSize = new System.Drawing.Size(671, 420);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.tableLayoutPanel);
             this.Name = "Form1";
@@ -199,7 +199,6 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
-        private System.Windows.Forms.PictureBox originImg;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.PictureBox procImg;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
@@ -210,6 +209,7 @@
         private System.Windows.Forms.Button FFT_BT;
         private System.Windows.Forms.Button skinDetectionBT;
         private System.Windows.Forms.Button EqualizationBT;
+        private System.Windows.Forms.PictureBox originImg;
     }
 }
 

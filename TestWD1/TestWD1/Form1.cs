@@ -621,6 +621,7 @@ namespace TestWD1
                 System.Drawing.Bitmap img = cimage.ToBitmap();
                 procImg.Image = (Image)img;
                 img.Save(savePath + "fft.png");
+                originImg.Load(uploadPath + "origin.png");
                 bmp.Dispose();
             }
             catch (Exception ex)
@@ -665,6 +666,7 @@ namespace TestWD1
                     }
                 }
                 myBmp.UnlockBits();
+                originImg.Load(uploadPath + "origin.png");
                 // Dirty code
                 bmp.Save(readPath + "skin.png");
                 procImg.Load(readPath + "skin.png");
@@ -702,11 +704,18 @@ namespace TestWD1
             try {
                 // Read image from upload path
                 Bitmap bmp = new Bitmap(uploadPath + "origin.png");
+                PixelFormat format = bmp.PixelFormat;
+                Bitmap gray_bmp = new Bitmap(bmp.Width, bmp.Height, format);
+                Bitmap Histogram;
+                Bitmap Histogram_equalization;
                 LockBitmap myBmp = new LockBitmap(bmp);
+                LockBitmap my_gray_bmp = new LockBitmap(gray_bmp);
                 myBmp.LockBits();
+                my_gray_bmp.LockBits();
                 int width = myBmp.Width;
                 int height = myBmp.Height;
                 int [] GrayLevel = new int[256];
+
                 for (int x = 0; x < width; x++)
                 {
                     for (int y = 0; y < height; y++)
@@ -720,11 +729,13 @@ namespace TestWD1
                         GrayLevel[GrayVal]++;
 
                         Color color = Color.FromArgb(GrayVal, GrayVal, GrayVal);
-                        myBmp.SetPixel(x, y, color);
+                        my_gray_bmp.SetPixel(x, y, color);
                     }
                 }
                 myBmp.UnlockBits();
+                my_gray_bmp.UnlockBits();
 
+                int old_MaxValue = 0;
                 int cdf_min = Int32.MaxValue;
                 int[] CDF = new int[GrayLevel.Length];
                 CDF[0] = GrayLevel[0];
@@ -734,6 +745,10 @@ namespace TestWD1
                     if (CDF[i] != 0 && CDF[i] < cdf_min)
                     {
                         cdf_min = CDF[i];
+                    }
+                    if(GrayLevel[i] > old_MaxValue)
+                    {
+                        old_MaxValue = GrayLevel[i];
                     }
                     
                 }
@@ -750,29 +765,73 @@ namespace TestWD1
                     h[v] = (int)Math.Round((m / d) * (L -1));
                     h[v] = ( h[v] >= 0)? h[v] : 0;
                 }
+
                 int [] new_GrayLevel = new int [GrayLevel.Length];
-                int MaxValue = 0;
-                for(int i = 0; i < GrayLevel.Length; i++)
+                int new_MaxValue = 0;
+                
+                for (int i = 0; i < GrayLevel.Length; i++)
                 {
                     new_GrayLevel[h[i]] += GrayLevel[i];
-                    if (new_GrayLevel[h[i]] > MaxValue) {
-                        MaxValue = new_GrayLevel[h[i]];
+                    if (new_GrayLevel[h[i]] > new_MaxValue) {
+                        new_MaxValue = new_GrayLevel[h[i]];
                     }
                 }
-                Bitmap Histogram;
-                drawHistogram(ref new_GrayLevel, new_GrayLevel.Length, 300, out Histogram);
-                // Dirty code
-                try {
-                    Histogram.Save(savePath + "HistogramEqualization.png");
-                    procImg.Load(savePath + "HistogramEqualization.png");
-                    Histogram.Save(readPath + "HistogramEqualization.png");
-                    procImg.Load(readPath + "HistogramEqualization.png");
-                }catch(Exception ex){
-                    Histogram.Save(readPath + "HistogramEqualization.png");
-                    procImg.Load(readPath + "HistogramEqualization.png");
-                    Histogram.Save(savePath + "HistogramEqualization.png");
-                    procImg.Load(savePath + "HistogramEqualization.png");
+                
+                Bitmap NewBitmap = new Bitmap(bmp.Width, bmp.Height, format);
+                LockBitmap newBitmap = new LockBitmap(NewBitmap);
+                LockBitmap oldBitmap = new LockBitmap(gray_bmp);
+                newBitmap.LockBits();
+                oldBitmap.LockBits();
+                for(int x = 0; x < oldBitmap.Width; x++)
+                {
+                    for(int y = 0; y < oldBitmap.Height; y++)
+                    {
+                        int R = oldBitmap.GetPixel(x, y).R;
+                        int G = oldBitmap.GetPixel(x, y).G;
+                        int B = oldBitmap.GetPixel(x, y).B;
+                        int new_gray = h[R];
+                        Color color = Color.FromArgb(new_gray, new_gray, new_gray);
+                        newBitmap.SetPixel(x, y, color);
+                    }
                 }
+                newBitmap.UnlockBits();
+                oldBitmap.UnlockBits();
+
+                Bitmap originBmp;
+                Bitmap procBmp;
+                drawHistogram(ref GrayLevel, GrayLevel.Length, 300, out Histogram);
+                drawHistogram(ref new_GrayLevel, new_GrayLevel.Length, 300, out Histogram_equalization);
+                gray_bmp = ResizeImage(gray_bmp, 300, gray_bmp.Height * 300 / gray_bmp.Width);
+                Histogram = ResizeImage(Histogram, 300, Histogram.Height * 300 / Histogram.Width);
+
+                NewBitmap.Save(savePath + "HistogramEqualization.png");
+                Histogram_equalization.Save(savePath + "HistogramEqualization_histogram.png");
+                NewBitmap = ResizeImage(NewBitmap, 300, NewBitmap.Height * 300 / NewBitmap.Width);
+                Histogram_equalization = ResizeImage(Histogram_equalization, 300, Histogram_equalization.Height * 300 / Histogram_equalization.Width);
+                originBmp = mergeImg(gray_bmp, Histogram, 1);
+                procBmp = mergeImg(NewBitmap, Histogram_equalization, 1);
+
+                // Dirty code
+                originBmp.Save(readPath + "HistogramEqualization_origin.png");
+                originImg.Load(readPath + "HistogramEqualization_origin.png");
+                originBmp.Save(savePath + "HistogramEqualization_origin.png");
+                originImg.Load(savePath + "HistogramEqualization_origin.png");
+
+                procBmp.Save(readPath + "HistogramEqualization_proc.png");
+                procImg.Load(readPath + "HistogramEqualization_proc.png");
+                procBmp.Save(savePath + "HistogramEqualization_proc.png");
+                procImg.Load(savePath + "HistogramEqualization_proc.png");
+                /**
+                NewBitmap.Save(readPath + "HistogramEqualization_proc.png");
+                procImg.Load(readPath + "HistogramEqualization_proc.png");
+                NewBitmap.Save(savePath + "HistogramEqualization_proc.png");
+                procImg.Load(savePath + "HistogramEqualization_proc.png");
+
+                Histogram_equalization.Save(readPath + "HistogramEqualization.png");
+                procImg.Load(readPath + "HistogramEqualization.png");
+                Histogram_equalization.Save(savePath + "HistogramEqualization.png");
+                procImg.Load(savePath + "HistogramEqualization.png");
+                **/
                 bmp.Dispose();
                 Histogram.Dispose();
             }catch (Exception ex) {
