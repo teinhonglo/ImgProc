@@ -801,11 +801,12 @@ namespace TestWD1
                 Bitmap procBmp;
                 drawHistogram(ref GrayLevel, GrayLevel.Length, 300, out Histogram);
                 drawHistogram(ref new_GrayLevel, new_GrayLevel.Length, 300, out Histogram_equalization);
-                gray_bmp = ResizeImage(gray_bmp, 300, gray_bmp.Height * 300 / gray_bmp.Width);
-                Histogram = ResizeImage(Histogram, 300, Histogram.Height * 300 / Histogram.Width);
-
+                gray_bmp.Save(savePath + "Gray_level.png");
                 NewBitmap.Save(savePath + "HistogramEqualization.png");
                 Histogram_equalization.Save(savePath + "HistogramEqualization_histogram.png");
+
+                gray_bmp = ResizeImage(gray_bmp, 300, gray_bmp.Height * 300 / gray_bmp.Width);
+                Histogram = ResizeImage(Histogram, 300, Histogram.Height * 300 / Histogram.Width);
                 NewBitmap = ResizeImage(NewBitmap, 300, NewBitmap.Height * 300 / NewBitmap.Width);
                 Histogram_equalization = ResizeImage(Histogram_equalization, 300, Histogram_equalization.Height * 300 / Histogram_equalization.Width);
                 originBmp = mergeImg(gray_bmp, Histogram, 1);
@@ -821,17 +822,6 @@ namespace TestWD1
                 procImg.Load(readPath + "HistogramEqualization_proc.png");
                 procBmp.Save(savePath + "HistogramEqualization_proc.png");
                 procImg.Load(savePath + "HistogramEqualization_proc.png");
-                /**
-                NewBitmap.Save(readPath + "HistogramEqualization_proc.png");
-                procImg.Load(readPath + "HistogramEqualization_proc.png");
-                NewBitmap.Save(savePath + "HistogramEqualization_proc.png");
-                procImg.Load(savePath + "HistogramEqualization_proc.png");
-
-                Histogram_equalization.Save(readPath + "HistogramEqualization.png");
-                procImg.Load(readPath + "HistogramEqualization.png");
-                Histogram_equalization.Save(savePath + "HistogramEqualization.png");
-                procImg.Load(savePath + "HistogramEqualization.png");
-                **/
                 bmp.Dispose();
                 Histogram.Dispose();
             }catch (Exception ex) {
