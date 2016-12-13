@@ -40,6 +40,8 @@
             this.FFT_BT = new System.Windows.Forms.Button();
             this.skinDetectionBT = new System.Windows.Forms.Button();
             this.EqualizationBT = new System.Windows.Forms.Button();
+            this.ImgSmoothingBT = new System.Windows.Forms.Button();
+            this.EdgeDectectionBT = new System.Windows.Forms.Button();
             this.tableLayoutPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.originImg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.procImg)).BeginInit();
@@ -85,7 +87,8 @@
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 7;
+            this.tableLayoutPanel1.ColumnCount = 8;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -100,10 +103,13 @@
             this.tableLayoutPanel1.Controls.Add(this.FFT_BT, 4, 0);
             this.tableLayoutPanel1.Controls.Add(this.skinDetectionBT, 5, 0);
             this.tableLayoutPanel1.Controls.Add(this.EqualizationBT, 6, 0);
+            this.tableLayoutPanel1.Controls.Add(this.ImgSmoothingBT, 7, 0);
+            this.tableLayoutPanel1.Controls.Add(this.EdgeDectectionBT, 0, 1);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(6, 4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.Size = new System.Drawing.Size(653, 74);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
@@ -177,6 +183,26 @@
             this.EqualizationBT.UseVisualStyleBackColor = true;
             this.EqualizationBT.Click += new System.EventHandler(this.EqualizationBT_Click);
             // 
+            // ImgSmoothingBT
+            // 
+            this.ImgSmoothingBT.Location = new System.Drawing.Point(570, 3);
+            this.ImgSmoothingBT.Name = "ImgSmoothingBT";
+            this.ImgSmoothingBT.Size = new System.Drawing.Size(75, 23);
+            this.ImgSmoothingBT.TabIndex = 11;
+            this.ImgSmoothingBT.Text = "Smoothing";
+            this.ImgSmoothingBT.UseVisualStyleBackColor = true;
+            this.ImgSmoothingBT.Click += new System.EventHandler(this.ImgSmoothingBT_Click);
+            // 
+            // EdgeDectectionBT
+            // 
+            this.EdgeDectectionBT.Location = new System.Drawing.Point(3, 32);
+            this.EdgeDectectionBT.Name = "EdgeDectectionBT";
+            this.EdgeDectectionBT.Size = new System.Drawing.Size(75, 23);
+            this.EdgeDectectionBT.TabIndex = 12;
+            this.EdgeDectectionBT.Text = "Edge";
+            this.EdgeDectectionBT.UseVisualStyleBackColor = true;
+            this.EdgeDectectionBT.Click += new System.EventHandler(this.EdgeDectectionBT_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -210,6 +236,8 @@
         private System.Windows.Forms.Button skinDetectionBT;
         private System.Windows.Forms.Button EqualizationBT;
         private System.Windows.Forms.PictureBox originImg;
+        private System.Windows.Forms.Button ImgSmoothingBT;
+        private System.Windows.Forms.Button EdgeDectectionBT;
     }
 }
 

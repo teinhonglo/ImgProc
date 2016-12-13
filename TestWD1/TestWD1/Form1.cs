@@ -825,8 +825,101 @@ namespace TestWD1
                 bmp.Dispose();
                 Histogram.Dispose();
             }catch (Exception ex) {
-                MessageBox.Show(""+ex);
+                MessageBox.Show("" + ex);
             }
+        }
+
+        private void ImgSmoothingBT_Click(object sender, EventArgs e)
+        {
+            double [,] Gaussian_3x3 = new double[3, 3] {  {1.0 / 16, 2.0 / 16, 1.0 / 16},
+                                                          {2.0 / 16, 4.0 / 16, 2.0 / 16}, 
+                                                          {1.0 / 16, 2.0 / 16, 1.0 / 16}};
+
+            double[,] Averaging_3x3 = new double[3, 3] {  {1.0 / 9, 1.0 / 9, 1.0 / 9},
+                                                          {1.0 / 9, 1.0 / 9, 1.0 / 9}, 
+                                                          {1.0 / 9, 1.0 / 9, 1.0 / 9}};
+
+            try {
+                Bitmap bmp = new Bitmap(uploadPath + "origin.png");
+                GrayLeval(ref bmp);
+                Bitmap smoothing;
+                smoothing = Convolution(bmp, Averaging_3x3);
+                bmp.Save(savePath + "garyBmp.png");
+                smoothing.Save(savePath + "smoothing.png");
+                originImg.Load(savePath + "garyBmp.png");
+                procImg.Load(savePath + "smoothing.png");
+                bmp.Dispose();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("" + ex);
+            }
+        }
+
+        private void EdgeDectectionBT_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private Bitmap Convolution(Bitmap origin, double[,] filter)
+        {
+            int fltWidth = filter.GetLength(0);
+            int fltHeight = filter.GetLength(1);
+            int newWidth = origin.Width;
+            int newHeight = origin.Height;
+
+            PixelFormat newFormat = origin.PixelFormat;
+            Bitmap NewBitmap = new Bitmap(newWidth, newHeight, newFormat);
+            LockBitmap newBitmap = new LockBitmap(NewBitmap);
+            LockBitmap originBitmap = new LockBitmap(origin);
+
+            newBitmap.LockBits();
+            originBitmap.LockBits();
+            for (int x = 0; x < newBitmap.Width - fltWidth; x++)
+            {
+                for (int y = 0; y < newBitmap.Height - fltHeight; y++)
+                {
+                    double localSum = 0;
+                    for (int fx = 0; fx < fltWidth; fx++)
+                    {
+                        for (int fy = 0; fy < fltHeight; fy++)
+                        {
+                            int R = originBitmap.GetPixel(x + fx, y + fy).R;
+                            int G = originBitmap.GetPixel(x + fx, y + fy).G;
+                            int B = originBitmap.GetPixel(x + fx, y + fy).B;
+                            int GrayLevel = (R + G + B) / 3;
+                            localSum += GrayLevel * filter[fx, fy];
+                        }
+                    }
+                    localSum = (localSum > 255) ? 255 : localSum;
+                    localSum = (localSum < 0) ? 0 : localSum;
+                    int normalSum = (int)localSum;
+
+                    Color color = Color.FromArgb(normalSum, normalSum, normalSum);
+                    newBitmap.SetPixel(x, y, color);
+                }
+            }
+            newBitmap.UnlockBits();
+            originBitmap.UnlockBits();
+
+            return NewBitmap;
+        }
+
+        private void GrayLeval(ref Bitmap origin) {
+            LockBitmap lockOrigin = new LockBitmap(origin);
+            lockOrigin.LockBits();
+            for (int x = 0; x < lockOrigin.Width; x++) 
+            {
+                for (int y = 0; y < lockOrigin.Height; y++)
+                {
+                    int R = lockOrigin.GetPixel(x, y).R;
+                    int G = lockOrigin.GetPixel(x, y).G;
+                    int B = lockOrigin.GetPixel(x, y).B;
+                    int Gray = (R + G + B) / 3;
+                    lockOrigin.SetPixel(x, y, Color.FromArgb(Gray, Gray, Gray));
+                }
+            }
+            lockOrigin.UnlockBits();
         }
     }
 }
