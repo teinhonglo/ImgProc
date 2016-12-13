@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using System.Runtime.InteropServices;
 
 namespace TestWD1
 {
@@ -639,9 +640,9 @@ namespace TestWD1
                 Bitmap bmp = new Bitmap(uploadPath + "origin.png");
                 LockBitmap myBmp = new LockBitmap(bmp);
                 myBmp.LockBits();
-                for(int x = 0; x < myBmp.Width; x++)
+                for (int x = 0; x < myBmp.Width; x++)
                 {
-                    for(int y = 0; y < myBmp.Height; y++)
+                    for (int y = 0; y < myBmp.Height; y++)
                     {
                         // RGB 
                         int R = myBmp.GetPixel(x, y).R;
@@ -655,10 +656,11 @@ namespace TestWD1
                         RGB2HSV(R, G, B, ref H, ref S, ref V);
 
                         Color color;
-                        if(skinDetection(R, G, B))
+                        if (skinDetection(R, G, B))
                         {
                             color = Color.FromArgb(255, 255, 255);
-                        }else
+                        }
+                        else
                         {
                             color = Color.FromArgb(0, 0, 0);
                         }
@@ -671,9 +673,10 @@ namespace TestWD1
                 bmp.Save(readPath + "skin.png");
                 procImg.Load(readPath + "skin.png");
                 bmp.Save(savePath + "skin.png");
-                procImg.Load(savePath+"skin.png");
+                procImg.Load(savePath + "skin.png");
                 bmp.Dispose();
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
@@ -682,26 +685,27 @@ namespace TestWD1
         public static bool skinDetection(int r, int g, int b)
         {
             var Cb = (0.148 * r) - (0.291 * g) + (0.439 * b) + 128;
-			var Cr = (0.439 * r) - (0.368 * g) - (0.071 * b) + 128;
- 
-			if ((r > 95 && g > 40 && b > 20 
-				&& (Math.Max(Math.Max(r, g),b) - Math.Min(Math.Min(r, g), b) > 15) 
-				&& (r - g) > 15 && r > g && r > b) 
-				&& (Cr > 140 && Cr < 162 || Cb > 105 && Cb < 130))
-			{
-				return true;
-			}
-			else
-			{
-				return false; 
-			} 
- 
- 
-		}
+            var Cr = (0.439 * r) - (0.368 * g) - (0.071 * b) + 128;
+
+            if ((r > 95 && g > 40 && b > 20
+                && (Math.Max(Math.Max(r, g), b) - Math.Min(Math.Min(r, g), b) > 15)
+                && (r - g) > 15 && r > g && r > b)
+                && (Cr > 140 && Cr < 162 || Cb > 105 && Cb < 130))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+
+        }
 
         private void EqualizationBT_Click(object sender, EventArgs e)
         {
-            try {
+            try
+            {
                 // Read image from upload path
                 Bitmap bmp = new Bitmap(uploadPath + "origin.png");
                 PixelFormat format = bmp.PixelFormat;
@@ -714,7 +718,7 @@ namespace TestWD1
                 my_gray_bmp.LockBits();
                 int width = myBmp.Width;
                 int height = myBmp.Height;
-                int [] GrayLevel = new int[256];
+                int[] GrayLevel = new int[256];
 
                 for (int x = 0; x < width; x++)
                 {
@@ -739,52 +743,53 @@ namespace TestWD1
                 int cdf_min = Int32.MaxValue;
                 int[] CDF = new int[GrayLevel.Length];
                 CDF[0] = GrayLevel[0];
-                for (int i = 1; i < GrayLevel.Length; i++ )
+                for (int i = 1; i < GrayLevel.Length; i++)
                 {
                     CDF[i] = GrayLevel[i] + CDF[i - 1];
                     if (CDF[i] != 0 && CDF[i] < cdf_min)
                     {
                         cdf_min = CDF[i];
                     }
-                    if(GrayLevel[i] > old_MaxValue)
+                    if (GrayLevel[i] > old_MaxValue)
                     {
                         old_MaxValue = GrayLevel[i];
                     }
-                    
+
                 }
-                
+
                 int M = width;
                 int N = height;
                 int L = 256;
                 int[] h = new int[GrayLevel.Length];
-                
-                for (int v = 0; v < h.Length; v++) 
+
+                for (int v = 0; v < h.Length; v++)
                 {
                     double m = CDF[v] - cdf_min;
                     double d = M * N - cdf_min;
-                    h[v] = (int)Math.Round((m / d) * (L -1));
-                    h[v] = ( h[v] >= 0)? h[v] : 0;
+                    h[v] = (int)Math.Round((m / d) * (L - 1));
+                    h[v] = (h[v] >= 0) ? h[v] : 0;
                 }
 
-                int [] new_GrayLevel = new int [GrayLevel.Length];
+                int[] new_GrayLevel = new int[GrayLevel.Length];
                 int new_MaxValue = 0;
-                
+
                 for (int i = 0; i < GrayLevel.Length; i++)
                 {
                     new_GrayLevel[h[i]] += GrayLevel[i];
-                    if (new_GrayLevel[h[i]] > new_MaxValue) {
+                    if (new_GrayLevel[h[i]] > new_MaxValue)
+                    {
                         new_MaxValue = new_GrayLevel[h[i]];
                     }
                 }
-                
+
                 Bitmap NewBitmap = new Bitmap(bmp.Width, bmp.Height, format);
                 LockBitmap newBitmap = new LockBitmap(NewBitmap);
                 LockBitmap oldBitmap = new LockBitmap(gray_bmp);
                 newBitmap.LockBits();
                 oldBitmap.LockBits();
-                for(int x = 0; x < oldBitmap.Width; x++)
+                for (int x = 0; x < oldBitmap.Width; x++)
                 {
-                    for(int y = 0; y < oldBitmap.Height; y++)
+                    for (int y = 0; y < oldBitmap.Height; y++)
                     {
                         int R = oldBitmap.GetPixel(x, y).R;
                         int G = oldBitmap.GetPixel(x, y).G;
@@ -824,29 +829,71 @@ namespace TestWD1
                 procImg.Load(savePath + "HistogramEqualization_proc.png");
                 bmp.Dispose();
                 Histogram.Dispose();
-            }catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 MessageBox.Show("" + ex);
             }
         }
 
         private void ImgSmoothingBT_Click(object sender, EventArgs e)
         {
-            double [,] Gaussian_3x3 = new double[3, 3] {  {1.0 / 16, 2.0 / 16, 1.0 / 16},
-                                                          {2.0 / 16, 4.0 / 16, 2.0 / 16}, 
-                                                          {1.0 / 16, 2.0 / 16, 1.0 / 16}};
 
-            double[,] Averaging_3x3 = new double[3, 3] {  {1.0 / 9, 1.0 / 9, 1.0 / 9},
-                                                          {1.0 / 9, 1.0 / 9, 1.0 / 9}, 
-                                                          {1.0 / 9, 1.0 / 9, 1.0 / 9}};
+            double[,] filter = new double [3, 3];
+            double factor = 1;
+            double[,] Gaussian_3x3 = new double[3, 3] {  {1.0, 2.0, 1.0},
+                                                          {2.0, 4.0, 2.0},
+                                                          {1.0, 2.0, 1.0}};
 
-            try {
+            double[,] Averaging_3x3 = new double[3, 3] {  {1.0, 1.0, 1.0},
+                                                          {1.0, 1.0, 1.0},
+                                                          {1.0, 1.0, 1.0}};
+
+            double[,] Gaussian_5x5 = new double[5, 5]    { {  1,   4,  6,  4,  1 },
+                                                            {  4,  16, 24, 16,  4 },
+                                                            {  6,  24, 36, 24,  6 },
+                                                            {  4,  16, 24, 16,  4 },
+                                                            {  1,   4,  6,  4,  1 }, };
+
+            string value = "";
+            try
+            {
                 Bitmap bmp = new Bitmap(uploadPath + "origin.png");
                 GrayLeval(ref bmp);
+                if (InputBox.InputBoxImpement("Filter", "Input(0 = Gaussian_3x3, 1 = Averaging_3x3, Other = Gaussian_5x5)", ref value) == DialogResult.OK)
+                {
+                    switch (value)
+                    {
+                        case "0":
+                            {
+                                filter = Gaussian_3x3;
+                                factor = 1 / 16.0;
+                                break;
+                            }
+                        case "1":
+                            {
+                                filter = Averaging_3x3;
+                                factor = 1 / 9.0;
+                                break;
+                            }
+                        default:
+                            {
+                                filter = Gaussian_5x5;
+                                factor = 1 / 256.0;
+                                break;
+                            }
+                    }
+                }
                 Bitmap smoothing;
-                smoothing = Convolution(bmp, Averaging_3x3);
+                smoothing = Extension.ConvolutionFilter(bmp, filter, factor);
+                bmp.Save(readPath + "garyBmp.png");
+                originImg.Load(readPath + "garyBmp.png");
                 bmp.Save(savePath + "garyBmp.png");
-                smoothing.Save(savePath + "smoothing.png");
                 originImg.Load(savePath + "garyBmp.png");
+
+                smoothing.Save(readPath + "smoothing.png");
+                procImg.Load(readPath + "smoothing.png");
+                smoothing.Save(savePath + "smoothing.png");
                 procImg.Load(savePath + "smoothing.png");
                 bmp.Dispose();
             }
@@ -858,9 +905,64 @@ namespace TestWD1
 
         private void EdgeDectectionBT_Click(object sender, EventArgs e)
         {
+            double[,] filter = new double[3, 3];
+            double[,]  laplacian5x5 =  new double [5,5] {   {  0,  0, -1,  0,  0 },
+                                                            {  0, -1, -2, -1,  0 },
+                                                            { -1, -2, 16, -2, -1 },
+                                                            {  0, -1, -2, -1,  0 },
+                                                            {  0,  0, -1,  0,  0 } };
 
+            double[,] laplacian3x3 = new double [3, 3] {    { -1, -1, -1, },  
+                                                            { -1,  8, -1, },  
+                                                            { -1, -1, -1, }, };
+
+            double factor = 1.0;
+            string value = "";
+            try
+            {
+                Bitmap bmp = new Bitmap(uploadPath + "origin.png");
+                GrayLeval(ref bmp);
+                if (InputBox.InputBoxImpement("Filter", "Input(0 = laplacian5x5, 1 = laplacian3x3, Other = laplacian5x5)", ref value) == DialogResult.OK)
+                {
+                    switch (value)
+                    {
+                        case "0":
+                            {
+                                filter = laplacian5x5;
+                                break;
+                            }
+                        case "1":
+                            {
+                                filter = laplacian3x3;
+                                break;
+                            }
+                        default:
+                            {
+                                filter = laplacian5x5;
+                                break;
+                            }
+                    }
+                }
+                Bitmap result;
+                result = Extension.ConvolutionFilter(bmp, filter, factor);
+                
+                bmp.Save(readPath + "garyBmp.png");
+                originImg.Load(readPath + "garyBmp.png");
+                bmp.Save(savePath + "garyBmp.png");
+                originImg.Load(savePath + "garyBmp.png");
+
+                result.Save(readPath + "edgeDetection.png");
+                procImg.Load(readPath + "edgeDetection.png");
+                result.Save(savePath + "edgeDetection.png");
+                procImg.Load(savePath + "edgeDetection.png");
+                bmp.Dispose();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("" + ex);
+            }
         }
-
+        /*
         private Bitmap Convolution(Bitmap origin, double[,] filter)
         {
             int fltWidth = filter.GetLength(0);
@@ -885,19 +987,19 @@ namespace TestWD1
                         for (int fy = 0; fy < fltHeight; fy++)
                         {
                             int scanVal = 0;
-                            if (   x + fx >= originBitmap.Width 
-                                || y + fy >= originBitmap.Height) 
-                            { 
-                                scanVal = 255;
+                            if (x + fx >= originBitmap.Width
+                                || y + fy >= originBitmap.Height)
+                            {
+                                scanVal = 0;
                             }
                             else
                             {
-                               int R = originBitmap.GetPixel(x + fx, y + fy).R;
-                               int G = originBitmap.GetPixel(x + fx, y + fy).G;
-                               int B = originBitmap.GetPixel(x + fx, y + fy).B;
-                               int Gray = (R + G + B) / 3;
-                               scanVal = Gray;
-                               
+                                int R = originBitmap.GetPixel(x + fx, y + fy).R;
+                                int G = originBitmap.GetPixel(x + fx, y + fy).G;
+                                int B = originBitmap.GetPixel(x + fx, y + fy).B;
+                                int Gray = (R + G + B) / 3;
+                                scanVal = Gray;
+
                             }
 
                             localSum += scanVal * filter[fx, fy];
@@ -915,12 +1017,13 @@ namespace TestWD1
             originBitmap.UnlockBits();
 
             return NewBitmap;
-        }
+        }*/
 
-        private void GrayLeval(ref Bitmap origin) {
+        private void GrayLeval(ref Bitmap origin)
+        {
             LockBitmap lockOrigin = new LockBitmap(origin);
             lockOrigin.LockBits();
-            for (int x = 0; x < lockOrigin.Width; x++) 
+            for (int x = 0; x < lockOrigin.Width; x++)
             {
                 for (int y = 0; y < lockOrigin.Height; y++)
                 {
@@ -932,6 +1035,134 @@ namespace TestWD1
                 }
             }
             lockOrigin.UnlockBits();
+        }
+
+
+    }
+
+    public static class Extension
+    {
+        public static Bitmap ConvolutionFilter(this Bitmap sourceBitmap, double[,] filter, double factor = 1.0)
+        {
+            BitmapData sourceData = sourceBitmap.LockBits(new Rectangle(0, 0, sourceBitmap.Width, sourceBitmap.Height),ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+
+            byte[] pixelBuffer = new byte[sourceData.Stride * sourceData.Height];
+            byte[] resultBuffer = new byte[sourceData.Stride * sourceData.Height];
+
+
+            Marshal.Copy(sourceData.Scan0, pixelBuffer, 0, pixelBuffer.Length);
+
+
+            sourceBitmap.UnlockBits(sourceData);
+
+
+            double blue = 0.0;
+            double green = 0.0;
+            double red = 0.0;
+
+
+            int filterWidth = filter.GetLength(1);
+            int filterHeight = filter.GetLength(0);
+
+
+            int filterOffset = (filterWidth - 1) / 2;
+            int calcOffset = 0;
+
+
+            int byteOffset = 0;
+
+
+            for (int offsetY = filterOffset; offsetY <
+                 sourceBitmap.Height - filterOffset; offsetY++)
+            {
+                for (int offsetX = filterOffset; offsetX <
+                     sourceBitmap.Width - filterOffset; offsetX++)
+                {
+                    blue = 0;
+                    green = 0;
+                    red = 0;
+
+
+                    byteOffset = offsetY *
+                                    sourceData.Stride +
+                                    offsetX * 4;
+
+
+                    for (int filterY = -filterOffset;
+                         filterY <= filterOffset; filterY++)
+                    {
+                        for (int filterX = -filterOffset;
+                             filterX <= filterOffset; filterX++)
+                        {
+
+
+                            calcOffset = byteOffset +
+                                         (filterX * 4) +
+                                         (filterY * sourceData.Stride);
+
+
+                            blue += (double)(pixelBuffer[calcOffset]) *
+                                     filter[filterY + filterOffset,
+                                     filterX + filterOffset];
+
+
+                            green += (double)(pixelBuffer[calcOffset + 1]) *
+                                      filter[filterY + filterOffset,
+                                      filterX + filterOffset];
+
+
+                            red += (double)(pixelBuffer[calcOffset + 2]) *
+                                    filter[filterY + filterOffset,
+                                    filterX + filterOffset];
+                        }
+                    }
+
+
+                    blue = factor * blue + 0.0;
+                    green = factor * green + 0.0;
+                    red = factor * red + 0.0;
+
+
+                    if (blue > 255)
+                    { blue = 255; }
+                    else if (blue < 0)
+                    { blue = 0; }
+
+
+                    if (green > 255)
+                    { green = 255; }
+                    else if (green < 0)
+                    { green = 0; }
+
+
+                    if (red > 255)
+                    { red = 255; }
+                    else if (red < 0)
+                    { red = 0; }
+
+
+                    resultBuffer[byteOffset] = (byte)(blue);
+                    resultBuffer[byteOffset + 1] = (byte)(green);
+                    resultBuffer[byteOffset + 2] = (byte)(red);
+                    resultBuffer[byteOffset + 3] = 255;
+                }
+            }
+
+
+            Bitmap resultBitmap = new Bitmap(sourceBitmap.Width, sourceBitmap.Height);
+
+
+            BitmapData resultData = resultBitmap.LockBits(new Rectangle(0, 0,
+                                    resultBitmap.Width, resultBitmap.Height),
+                                    ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+
+
+            Marshal.Copy(resultBuffer, 0, resultData.Scan0, resultBuffer.Length);
+            resultBitmap.UnlockBits(resultData);
+
+
+            return resultBitmap;
         }
     }
 }
