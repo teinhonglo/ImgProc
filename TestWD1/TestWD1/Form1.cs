@@ -875,20 +875,32 @@ namespace TestWD1
 
             newBitmap.LockBits();
             originBitmap.LockBits();
-            for (int x = 0; x < newBitmap.Width - fltWidth; x++)
+            for (int x = 0; x < newBitmap.Width; x++)
             {
-                for (int y = 0; y < newBitmap.Height - fltHeight; y++)
+                for (int y = 0; y < newBitmap.Height; y++)
                 {
                     double localSum = 0;
                     for (int fx = 0; fx < fltWidth; fx++)
                     {
                         for (int fy = 0; fy < fltHeight; fy++)
                         {
-                            int R = originBitmap.GetPixel(x + fx, y + fy).R;
-                            int G = originBitmap.GetPixel(x + fx, y + fy).G;
-                            int B = originBitmap.GetPixel(x + fx, y + fy).B;
-                            int GrayLevel = (R + G + B) / 3;
-                            localSum += GrayLevel * filter[fx, fy];
+                            int scanVal = 0;
+                            if (   x + fx >= originBitmap.Width 
+                                || y + fy >= originBitmap.Height) 
+                            { 
+                                scanVal = 255;
+                            }
+                            else
+                            {
+                               int R = originBitmap.GetPixel(x + fx, y + fy).R;
+                               int G = originBitmap.GetPixel(x + fx, y + fy).G;
+                               int B = originBitmap.GetPixel(x + fx, y + fy).B;
+                               int Gray = (R + G + B) / 3;
+                               scanVal = Gray;
+                               
+                            }
+
+                            localSum += scanVal * filter[fx, fy];
                         }
                     }
                     localSum = (localSum > 255) ? 255 : localSum;
