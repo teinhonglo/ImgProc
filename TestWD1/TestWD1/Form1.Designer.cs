@@ -42,6 +42,8 @@
             this.EqualizationBT = new System.Windows.Forms.Button();
             this.ImgSmoothingBT = new System.Windows.Forms.Button();
             this.EdgeDectectionBT = new System.Windows.Forms.Button();
+            this.handDetection = new System.Windows.Forms.Button();
+            this.cannyEdgeBT = new System.Windows.Forms.Button();
             this.tableLayoutPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.originImg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.procImg)).BeginInit();
@@ -105,6 +107,8 @@
             this.tableLayoutPanel1.Controls.Add(this.EqualizationBT, 6, 0);
             this.tableLayoutPanel1.Controls.Add(this.ImgSmoothingBT, 7, 0);
             this.tableLayoutPanel1.Controls.Add(this.EdgeDectectionBT, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.handDetection, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.cannyEdgeBT, 2, 1);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(6, 4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
@@ -203,6 +207,26 @@
             this.EdgeDectectionBT.UseVisualStyleBackColor = true;
             this.EdgeDectectionBT.Click += new System.EventHandler(this.EdgeDectectionBT_Click);
             // 
+            // handDetection
+            // 
+            this.handDetection.Location = new System.Drawing.Point(84, 32);
+            this.handDetection.Name = "handDetection";
+            this.handDetection.Size = new System.Drawing.Size(75, 23);
+            this.handDetection.TabIndex = 13;
+            this.handDetection.Text = "hand ";
+            this.handDetection.UseVisualStyleBackColor = true;
+            this.handDetection.Click += new System.EventHandler(this.handDetection_Click);
+            // 
+            // cannyEdgeBT
+            // 
+            this.cannyEdgeBT.Location = new System.Drawing.Point(165, 32);
+            this.cannyEdgeBT.Name = "cannyEdgeBT";
+            this.cannyEdgeBT.Size = new System.Drawing.Size(75, 23);
+            this.cannyEdgeBT.TabIndex = 14;
+            this.cannyEdgeBT.Text = "canny";
+            this.cannyEdgeBT.UseVisualStyleBackColor = true;
+            this.cannyEdgeBT.Click += new System.EventHandler(this.cannyEdgeBT_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -238,6 +262,8 @@
         private System.Windows.Forms.PictureBox originImg;
         private System.Windows.Forms.Button ImgSmoothingBT;
         private System.Windows.Forms.Button EdgeDectectionBT;
+        private System.Windows.Forms.Button handDetection;
+        private System.Windows.Forms.Button cannyEdgeBT;
     }
 }
 

@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using Emgu.CV.Structure;
+using Emgu.CV;
 using System.Runtime.InteropServices;
 
 namespace TestWD1
@@ -20,6 +22,7 @@ namespace TestWD1
         static string savePath = System.Environment.CurrentDirectory + "\\Output\\";
         static string readPath = System.Environment.CurrentDirectory + "\\Read\\";
         static bool isFst = true;
+        static Bitmap bitmap = null;
 
         public Form1()
         {
@@ -30,9 +33,11 @@ namespace TestWD1
         }
         private void UploadBt_Click(object sender, EventArgs e)
         {
+            
             openFileDialog1.Filter = "";
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
+
                 string ImgPath = openFileDialog1.FileName;
                 try
                 {
@@ -47,20 +52,22 @@ namespace TestWD1
                         fs.Read(buffer, 0, buffer.Length);
                         ms.Write(buffer, 0, buffer.Length);
                     }
-
-                    Bitmap bitmap = new Bitmap(ms);
-                    System.Console.WriteLine(uploadPath + "origin.png");
-                    System.Console.WriteLine(savePath + "output.png");
+                    
+                    bitmap = new Bitmap(ms);
+                    System.Console.WriteLine("0");
                     // Dirty Code
                     bitmap.Save(readPath + "origin.png");
+                    System.Console.WriteLine("1");
                     originImg.Load(readPath + "origin.png");
+                    System.Console.WriteLine("2");
                     bitmap.Save(readPath + "output.png");
+                    System.Console.WriteLine("3");
                     procImg.Load(readPath + "output.png");
-
+                    System.Console.WriteLine("4");
                     // Save Image
                     bitmap.Save(uploadPath + "origin.png");
                     bitmap.Save(savePath + "output.png");
-                    bitmap.Dispose();
+                    //bitmap.Dispose();
                 }
                 catch (Exception ex)
                 {
@@ -839,7 +846,7 @@ namespace TestWD1
         private void ImgSmoothingBT_Click(object sender, EventArgs e)
         {
 
-            double[,] filter = new double [3, 3];
+            double[,] filter = new double[3, 3];
             double factor = 1;
             double[,] Gaussian_3x3 = new double[3, 3] {  {1.0, 2.0, 1.0},
                                                           {2.0, 4.0, 2.0},
@@ -859,7 +866,7 @@ namespace TestWD1
             try
             {
                 Bitmap bmp = new Bitmap(uploadPath + "origin.png");
-                GrayLeval(ref bmp);
+                //GrayLeval(ref bmp);
                 if (InputBox.InputBoxImpement("Filter", "Input(0 = Gaussian_3x3, 1 = Averaging_3x3, Other = Gaussian_5x5)", ref value) == DialogResult.OK)
                 {
                     switch (value)
@@ -906,14 +913,14 @@ namespace TestWD1
         private void EdgeDectectionBT_Click(object sender, EventArgs e)
         {
             double[,] filter = new double[3, 3];
-            double[,]  laplacian5x5 =  new double [5,5] {   {  0,  0, -1,  0,  0 },
+            double[,] laplacian5x5 = new double[5, 5] {   {  0,  0, -1,  0,  0 },
                                                             {  0, -1, -2, -1,  0 },
                                                             { -1, -2, 16, -2, -1 },
                                                             {  0, -1, -2, -1,  0 },
                                                             {  0,  0, -1,  0,  0 } };
 
-            double[,] laplacian3x3 = new double [3, 3] {    { -1, -1, -1, },  
-                                                            { -1,  8, -1, },  
+            double[,] laplacian3x3 = new double[3, 3] {    { -1, -1, -1, },
+                                                            { -1,  8, -1, },
                                                             { -1, -1, -1, }, };
 
             double factor = 1.0;
@@ -945,7 +952,7 @@ namespace TestWD1
                 }
                 Bitmap result;
                 result = Extension.ConvolutionFilter(bmp, filter, factor);
-                
+
                 bmp.Save(readPath + "garyBmp.png");
                 originImg.Load(readPath + "garyBmp.png");
                 bmp.Save(savePath + "garyBmp.png");
@@ -1037,14 +1044,188 @@ namespace TestWD1
             lockOrigin.UnlockBits();
         }
 
+        private void handDetection_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Bitmap bmp = new Bitmap(bitmap);
+                double[,] Gaussian_5x5 = new double[5, 5]    { {  1,   4,  6,  4,  1 },
+                                                            {  4,  16, 24, 16,  4 },
+                                                            {  6,  24, 36, 24,  6 },
+                                                            {  4,  16, 24, 16,  4 },
+                                                            {  1,   4,  6,  4,  1 } };
 
+
+                bmp = Extension.ConvolutionFilter(bmp, Gaussian_5x5, 1 / 256.0);
+                // Clone a portion of the Bitmap object.
+                Rectangle cloneRect = new Rectangle(0, 0, bmp.Width, bmp.Height);
+                System.Drawing.Imaging.PixelFormat format = bmp.PixelFormat;
+                Bitmap skinBmp = bmp.Clone(cloneRect, format);
+
+                int[] hSkin = new int[bmp.Width];
+                int[] vSkin = new int[bmp.Height];
+                LockBitmap srcBmp = new LockBitmap(bmp);
+                LockBitmap mySkinBmp = new LockBitmap(skinBmp);
+                mySkinBmp.LockBits();
+                for (int x = 0; x < mySkinBmp.Width; x++)
+                {
+                    for (int y = 0; y < mySkinBmp.Height; y++)
+                    {
+                        // RGB 
+                        int R = mySkinBmp.GetPixel(x, y).R;
+                        int G = mySkinBmp.GetPixel(x, y).G;
+                        int B = mySkinBmp.GetPixel(x, y).B;
+                        // HSV 
+                        double H = 0;
+                        double S = 0;
+                        double V = 0;
+
+                        RGB2HSV(R, G, B, ref H, ref S, ref V);
+
+                        Color color;
+                        if (skinDetection(R, G, B))
+                        {
+                            color = Color.FromArgb(255, 255, 255);
+                            hSkin[x]++;
+                            vSkin[y]++;
+                        }
+                        else
+                        {
+                            color = Color.FromArgb(0, 0, 0);
+                        }
+                        mySkinBmp.SetPixel(x, y, color);
+                    }
+                }
+                int maxHVal = hSkin.Max();
+                int maxHIdx = hSkin.ToList().IndexOf(maxHVal);
+
+                int maxVVal = vSkin.Max();
+                int maxVIdx = vSkin.ToList().IndexOf(maxVVal);
+
+                int minY = Int32.MaxValue;
+                int maxY = 0;
+                int minX = Int32.MaxValue;
+                int maxX = 0;
+                //MessageBox.Show(maxHVal + ":" + maxHIdx);
+                //MessageBox.Show(maxVVal + ":" + maxVIdx);
+
+                isFst = true;
+                for (int y = 0; y < srcBmp.Height; y++)
+                {
+                    int R = mySkinBmp.GetPixel(maxHIdx, y).R;
+                    if (R == 255)
+                    {
+                        if (y < minY)
+                        {
+                            minY = y;
+                        }
+                        if (y > maxY)
+                        {
+                            maxY = y;
+                        }
+                        //mySkinBmp.SetPixel(maxHIdx, y, Color.FromArgb(200, 0, 0));
+                        srcBmp.SetPixel(maxHIdx, y, Color.FromArgb(200, 0, 0));
+                    }
+                }
+                bool isFindCenter = false;
+                bool isDetectSkin = false;
+                for (int x = 0; x < srcBmp.Width; x++)
+                {
+
+                    int R = mySkinBmp.GetPixel(x, maxVIdx).R;
+                    int G = mySkinBmp.GetPixel(x, maxVIdx).G;
+                    int B = mySkinBmp.GetPixel(x, maxVIdx).B;
+
+                    if (R == 255)
+                    {
+                        isDetectSkin = true;
+                        if (x < minX)
+                        {
+                            minX = x;
+                        }
+                        if (x > maxX)
+                        {
+                            maxX = x;
+                        }
+                        srcBmp.SetPixel(x, maxVIdx, Color.FromArgb(0, 200, 0));
+                    }
+                    else
+                    {
+                        if (isFindCenter)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (R == 200)
+                    {
+                        isFindCenter = true;
+                    }
+
+                }
+
+
+                srcBmp.UnlockBits();
+                mySkinBmp.UnlockBits();
+
+                Pen bluePen = new Pen(Color.Blue, 5);
+                Rectangle rect = new Rectangle(minX, minY, maxX - minX, maxY - minY);
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    g.DrawRectangle(bluePen, rect);
+                    g.Dispose();
+                }
+
+                // Dirty code
+                bmp.Save(readPath + "hand.png");
+                procImg.Load(readPath + "hand.png");
+                bmp.Save(savePath + "hand.png");
+                procImg.Load(savePath + "hand.png");
+
+                bmp.Dispose();
+                skinBmp.Dispose();
+                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void cannyEdgeBT_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Bitmap bmp = new Bitmap(readPath + "origin.png");
+                Bitmap cannyImage = cannyEdgeDetection(bmp);
+
+                // Dirty code
+                cannyImage.Save(readPath + "canny.png");
+                procImg.Load(readPath + "canny.png");
+                cannyImage.Save(savePath + "canny.png");
+                procImg.Load(savePath + "canny.png");
+                bmp.Dispose();
+                cannyImage.Dispose();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+         }
+
+        private Bitmap cannyEdgeDetection(Bitmap bmp) {
+            Image<Gray, Byte> image = new Image<Gray, Byte>(bmp);
+            Image<Gray, Byte> cannyImage = image.Canny(125, 255);
+            cannyImage._ThresholdBinary(new Gray(128), new Gray(350));
+            return cannyImage.ToBitmap();
+        }
     }
 
     public static class Extension
     {
         public static Bitmap ConvolutionFilter(this Bitmap sourceBitmap, double[,] filter, double factor = 1.0)
         {
-            BitmapData sourceData = sourceBitmap.LockBits(new Rectangle(0, 0, sourceBitmap.Width, sourceBitmap.Height),ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            BitmapData sourceData = sourceBitmap.LockBits(new Rectangle(0, 0, sourceBitmap.Width, sourceBitmap.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
 
             byte[] pixelBuffer = new byte[sourceData.Stride * sourceData.Height];

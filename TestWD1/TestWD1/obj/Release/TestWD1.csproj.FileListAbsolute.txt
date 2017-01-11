@@ -62,3 +62,10 @@ E:\lou\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.csprojResolveAssemblyReferenc
 E:\lou\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.Form1.resources
 E:\lou\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.Properties.Resources.resources
 E:\lou\ImgProc\TestWD1\TestWD1\obj\Release\TestWD1.csproj.GenerateResource.Cache
+E:\lou\ImgProc\TestWD1\TestWD1\bin\Release\Emgu.CV.UI.dll
+E:\lou\ImgProc\TestWD1\TestWD1\bin\Release\ZedGraph.dll
+E:\lou\ImgProc\TestWD1\TestWD1\bin\Release\Emgu.CV.UI.GL.dll
+E:\lou\ImgProc\TestWD1\TestWD1\bin\Release\Emgu.CV.World.dll
+E:\lou\ImgProc\TestWD1\TestWD1\bin\Release\Emgu.CV.UI.xml
+E:\lou\ImgProc\TestWD1\TestWD1\bin\Release\Emgu.CV.UI.GL.xml
+E:\lou\ImgProc\TestWD1\TestWD1\bin\Release\Emgu.CV.World.xml
